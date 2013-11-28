@@ -533,11 +533,10 @@ void fusion_fullpath(char fpath[PATH_MAX], const char *path)
 		rmelem_arc(fpath);
 	}
 	// Update the cache Q:
- /*   	if(MODE_SCC)
+ 	else if (MODE_SCC)
 	{
 		rmelem_scc(fpath);
 	}
-*/
 	else if (MODE_LRU)
 	{
 		rmelem_lru(fpath);
@@ -565,7 +564,7 @@ void fusion_fullpath(char fpath[PATH_MAX], const char *path)
 	char oldaddr[PATH_MAX] = {0};
 	zht_lookup(path, oldaddr);
 //new code
-	real_ip(oldaddr); //get real ip
+	int hdd_flag = real_ip(oldaddr); //get real ip, and check if the file was removed to hdd
 	zht_remove(path);
 
 	/*if it's a local operation, we are done here*/
@@ -578,9 +577,27 @@ void fusion_fullpath(char fpath[PATH_MAX], const char *path)
 		return retstat;
 	}
 
+/*modified*/
 	/*or we need to remove the remote file*/
-	ffs_rmfile_c("udt", oldaddr, "9000", fpath);     //Fusionfs
 
+	if(hdd_flag)
+	{ //this file is in the remote hdd 
+		char fname_hdd[PATH_MAX] = {0};
+		get_hdd_path(fname_hdd, fpath); 
+		
+		ffs_rmfile_c("udt", oldaddr, "9000", fname_hdd); //this file is in the remote hdd
+	}
+	else
+	{
+		ffs_rmfile_c("udt", oldaddr, "9000", fpath);  // this file is in the remote ssd 
+	}
+
+	retstat = unlink(fpath);      //unlink transfered file here
+	if (retstat < 0)
+	{
+		retstat = fusion_error("fusion_unlink unlink");
+	}
+/*end modified*/
 	return retstat;
 }
 
