@@ -17,6 +17,9 @@
 // writing, the most current API version is 28
 #define FUSE_USE_VERSION 28
 
+/* DFZ FusionFS Constants */
+#define ZHT_LOOKUP_FAIL -2
+
 // need this to get pwrite().  I have to use setvbuf() instead of
 // setlinebuf() later in consequence.
 #define _XOPEN_SOURCE 500
@@ -31,8 +34,9 @@
 // 		CHANGE THE FOLLOWING BEFORE DEPLOYMENT!!!!!!!!
 // ===================
 #define ROOTSYMSIZE 4096 //ssd mount point size; not in use now.
-#define SSD_TOT (ONEG) //the threshold; <= SSD_Capacity - Max_File_size
+#define SSD_TOT (ONEM) //the threshold; <= SSD_Capacity - Max_File_size
 #define MODE_LRU 1 //LRU caching by default
+#define MODE_SCC 2 //SCC caching
 #define MODE_ARC 3 // Adapative replacement caching
 #define LOG_OFF 1 //turn off the log; faster your system!
 #define CHKSSD_POSIX 0 //use command line to check SSD usage, seems to have performance degradatoin. Not in use now.
@@ -76,6 +80,7 @@ typedef struct _inode_t
 	int inSSD; // I'm still thinking if this's necessary
 	int freq; //for LFU
 	time_t atime; //last access time
+	int ref_bit;    //used for Second Chance Algorithm
 
 }inode_t;
 
@@ -114,7 +119,11 @@ struct schfs_state
     inode_t *lru_tail;
     inode_t *lfu_head;
     inode_t *lfu_tail;
-	//add more if needed
+    
+    inode_t *scc_head;
+	inode_t *scc_tail;
+	inode_t *victim;
+
 	arc_p   *arc;	
 };
 
@@ -123,11 +132,11 @@ struct schfs_state
 /**
  * Useful macros
  */
-#define SCHFS_DATA ((struct schfs_state *) fuse_get_context()->private_data)
-#define SCH_SSD \
-    (((struct schfs_state *) fuse_get_context()->private_data)->ssd)
+#define FUSION_DATA ((struct fusion_state *) fuse_get_context()->private_data)
+#define FUSION_SSD \
+    (((struct fusion_state *) fuse_get_context()->private_data)->ssd)
 #define SCH_HDD \
-    (((struct schfs_state *) fuse_get_context()->private_data)->hdd)
+    (((struct fusion_state *) fuse_get_context()->private_data)->hdd)
 
 /**
  * forward declaration

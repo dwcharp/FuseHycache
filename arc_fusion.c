@@ -612,7 +612,6 @@ int fusion_symlink(const char *path, const char *link) {
 
 	log_msg("\nfusion_symlink(path=\"%s\", link=\"%s\")\n", path, link);
 	fusion_fullpath(flink, link);
-
 	retstat = symlink(path, flink);
 	if (retstat < 0)
 		retstat = fusion_error("fusion_symlink symlink");
@@ -657,7 +656,6 @@ int fusion_rename(const char *path, const char *newpath) {
 	// If fpath is not a symbolic link, it means fpath is in SSD which
         // indicates we should update the cache Q
             else
-
             {
             	if(MODE_ARC)
             	{
