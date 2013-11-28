@@ -25,8 +25,8 @@
  * To compile for a single file:
  * 		gcc -g -Wall `pkg-config fuse --cflags` -c fusionfs.c -L./udt4_c/ffsnet -lffsnet_bridger
  */
-#include "./ffsnet/ffsnet.h"
-#include "royparams.h"
+##include "./ffsnet/ffsnet.h"
+#include "params.h"
 #include "util.h"
 
 #include <ctype.h>
