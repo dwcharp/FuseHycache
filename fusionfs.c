@@ -443,8 +443,8 @@ int fusion_unlink(const char *path)
 		fusion_error("_unlink() trying to remove a nonexistent file");
 		return -1;
 	}
-
-
+	
+	printf("Calling unlink function\n");
 	/*remove the file from its parent dir in ZHT*/
 	char dirname[PATH_MAX] = {0}, fname[PATH_MAX] = {0};
 	char *pch = strrchr(path, '/');
