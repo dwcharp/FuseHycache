@@ -268,9 +268,9 @@ int arc_cache_has_files()
 	return arc_heads[B1] != NULL || arc_heads[B2] != NULL; 
 }
 
-void intialize_arc(arc_p * ac)
+void intialize_arc(arc_p *ac)
 {
-	arc = ac;
+	arc = &ac;
 	arc_heads = arc->arc_heads;
 	arc_tails = arc->arc_tails;
 	arc_list_size = arc->arc_list_size;

@@ -2016,7 +2016,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 	fusion_data->scc_tail = NULL;
 	fusion_data->victim = NULL;
 	//fusion_data->arc = (arc_p*)calloc(1,sizeof(arc_p));
-	intialize_arc((*fusion_data).arc);
+	intialize_arc(fusion_data->arc);
 	/*arc_p * ap = fusion_data->arc;
 	inode_t **arc_heads = ap->arc_heads;
 	inode_t **arc_tails = ap->arc_tails;
