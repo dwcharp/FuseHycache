@@ -54,13 +54,16 @@ void rmelem_scc(const char *fname);
 inode_t **arc_heads;
 inode_t **arc_tails;
 arc_p   *arc;
+int *arc_list_size;
 /* Helper function to append an elem to a list */
-
+void intialize_arc(arc_p*);
 inode_t* findelem_list(int, const char*);
+inode_t* findelem_arc(char *fname);
 void remque_head_arc(int);
 inode_t* remove_node(int list_index);
 void rmelem_list(int list_index, const char *fname);
 void rmelem_arc(const char *fname);
+void insque_arc(inode_t *elem);
 void remque_arc(char *fname);
 void addtolist(int list_index, inode_t *elem);
 int get_size(int);

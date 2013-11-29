@@ -48,16 +48,16 @@
 #include "./zht/inc/c_zhtclient.h"
 
 
-int ffs_recvfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *remote_filename, const char *local_filename);
-int ffs_sendfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *local_filename, const char *remote_filename);
-int ffs_rmfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *remote_filename);
+ int ffs_recvfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *remote_filename, const char *local_filename);
+ int ffs_sendfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *local_filename, const char *remote_filename);
+ int ffs_rmfile_c(const char *proto, const char *remote_ip, const char *server_port, const char *remote_filename);
 //int net_getmyip(char *ip);
 
 /**
  * Update <key, oldval> with <key, val>
  */
-int zht_update(const char *key, const char *val)
-{
+ int zht_update(const char *key, const char *val)
+ {
 //	/*DFZ debug*/
 //	char oldval[PATH_MAX] = {0};
 //	int status = zht_lookup(key, oldval);
@@ -67,89 +67,103 @@ int zht_update(const char *key, const char *val)
 //	else
 //		log_msg("DFZ debug: zht_update() - key = %s, oldval = %s. \n\n", key, oldval);
 
-	int remove_res = zht_remove(key);
-	 log_msg("DFZ debug: zht_update() - remove_res = %d. \n\n", remove_res);
+ 	int remove_res = zht_remove(key);
+ 	log_msg("DFZ debug: zht_update() - remove_res = %d. \n\n", remove_res);
 
 //	/*DFZ debug*/
 //	status = zht_lookup(key, oldval);
 //	if (ZHT_LOOKUP_FAIL == status)
 //		log_msg("DFZ debug: zht_update() - key %s not found. \n\n", key);
 //	else
-//		log_msg("DFZ debug: zht_update()/ - key = %s, oldval = %s. \n\n", key, oldval);
+//		log_msg("DFZ debug: zht_update() - key = %s, oldval = %s. \n\n", key, oldval);
 //
 //	log_msg("DFZ debug: zht_update() - key = %s, val =  %s. \n\n", key, val);
 
-	int insert_res = zht_insert(key, val);
-	log_msg("DFZ debug: zht_update() - insert_res = %d. \n\n", insert_res);
+ 	int insert_res = zht_insert(key, val);
+ 	log_msg("DFZ debug: zht_update() - insert_res = %d. \n\n", insert_res);
 
-	char newval[PATH_MAX] = {0};
-	int status = zht_lookup(key, newval);
+ 	char newval[PATH_MAX] = {0};
+ 	int status = zht_lookup(key, newval);
 
-	log_msg("DFZ debug: zht_update() - status = %d. \n\n", status);
+ 	log_msg("DFZ debug: zht_update() - status = %d. \n\n", status);
 
-	if (ZHT_LOOKUP_FAIL == status)
-		log_msg("DFZ debug: zht_update() - key %s not found. \n\n", key);
-	else
-		log_msg("DFZ debug: zht_update() - key = %s, newval = %s. \n\n", key, newval);
+ 	if (ZHT_LOOKUP_FAIL == status)
+ 		log_msg("DFZ debug: zht_update() - key %s not found. \n\n", key);
+ 	else
+ 		log_msg("DFZ debug: zht_update() - key = %s, newval = %s. \n\n", key, newval);
 
-	return 0;
-}
+ 	return 0;
+ }
 
 /**
  * <key, oldval> -> <key, (oldval + val)>
  */
-int zht_append(const char *key, const char *val)
-{
-	char newval[PATH_MAX] = {0};
+ int zht_append(const char *key, const char *val)
+ {
+ 	char newval[PATH_MAX] = {0};
 
-	char oldval[PATH_MAX] = {0};
-	zht_lookup(key, oldval);
+ 	char oldval[PATH_MAX] = {0};
+ 	zht_lookup(key, oldval);
 
-	strcpy(newval, oldval);
-	strcat(newval, val);
-	strcat(newval, " ");
+ 	strcpy(newval, oldval);
+ 	strcat(newval, val);
+ 	strcat(newval, " ");
 
-	zht_update(key, newval);
+ 	zht_update(key, newval);
 
-	return 0;
-}
+ 	return 0;
+ }
 
 /**
  * <key, oldval> -> <key, (oldval - val)>
  */
-int zht_delete(const char *key, const char *val)
-{
-	char newval[PATH_MAX] = {0};
-	char search[PATH_MAX] = {0};
+ int zht_delete(const char *key, const char *val)
+ {
+ 	char newval[PATH_MAX] = {0};
+ 	char search[PATH_MAX] = {0};
 
-	char oldval[PATH_MAX] = {0};
-	zht_lookup(key, oldval);
+ 	char oldval[PATH_MAX] = {0};
+ 	zht_lookup(key, oldval);
 
-	strcpy(search, " ");
-	strcat(search, val);
-	strcat(search, " ");
+ 	strcpy(search, " ");
+ 	strcat(search, val);
+ 	strcat(search, " ");
 
-	char *pch = strstr(oldval, search);
-	strncpy(newval, oldval, pch - oldval);
-	strcat(newval, " ");
-	strcat(newval, pch + strlen(search));
+ 	char *pch = strstr(oldval, search);
+ 	strncpy(newval, oldval, pch - oldval);
+ 	strcat(newval, " ");
+ 	strcat(newval, pch + strlen(search));
 
-	zht_update(key, newval);
+ 	zht_update(key, newval);
 
-	return 0;
-}
+ 	return 0;
+ }
 
 /**
  * Report errors to logfile and give -errno to caller
  *
  */
-static int fusion_error(char *str)
-{
-	int ret = -errno;
+ int fusion_error(char *str)
+ {
+ 	int ret = -errno;
 
-	log_msg("    ERROR %s: %s\n", str, strerror(errno));
+ 	log_msg("    ERROR %s: %s\n", str, strerror(errno));
 
-	return ret;
+ 	return ret;
+ }
+
+/*get real ip by deleting the symbol added to the ip to denote file removed from ssd to the hdd*/
+ int real_ip(char *ip){
+ 	char *pch = strchr(ip,'/');
+ 	if( pch != NULL){
+ 		char newip[PATH_MAX];
+        strncpy(newip,ip,pch -ip);  //have '\0' in the end of ip, so cut this way
+        strncpy(ip, newip,sizeof(newip)-1);
+        strcat(ip,"\0");
+        return 1;
+    }
+
+    return 0;
 }
 
 // Check whether the given user is permitted to perform the given operation on the given 
@@ -159,15 +173,15 @@ static int fusion_error(char *str)
 //  have the mountpoint.  I'll save it away early on in main(), and then
 //  whenever I need a path for something I'll call this to construct
 //  it.
-static void fusion_fullpath(char fpath[PATH_MAX], const char *path)
+void fusion_fullpath(char fpath[PATH_MAX], const char *path)
 {
-	strcpy(fpath, FUSION_DATA->rootdir);
+	strcpy(fpath, FUSION_DATA->ssd);//ssd is always the entry point  /*changed*/
 	strncat(fpath, path, PATH_MAX); // ridiculously long paths will
 	// break here
 
 	log_msg(
-			"    fusion_fullpath:  rootdir = \"%s\", path = \"%s\", fpath = \"%s\"\n",
-			FUSION_DATA->rootdir, path, fpath);
+	"    fusion_fullpath:  rootdir = \"%s\", path = \"%s\", fpath = \"%s\"\n",
+	FUSION_DATA->ssd, path, fpath);
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,32 +202,37 @@ static void fusion_fullpath(char fpath[PATH_MAX], const char *path)
  * 			2) if the file doesn't exist, FUSE will pass the control to
  * 				_create()
  */
-int fusion_getattr(const char *path, struct stat *statbuf)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_getattr(const char *path, struct stat *statbuf)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_getattr(path=\"%s\", statbuf=0x%08x)\n", path, statbuf);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_getattr(path=\"%s\", statbuf=0x%08x)\n", path, statbuf);
+ 	fusion_fullpath(fpath, path);
 
-	char res[PATH_MAX] = {0};
-	int status = zht_lookup(path, res);
+ 	char res[PATH_MAX] = {0};
+ 	int status = zht_lookup(path, res);
+//new code
+	int hdd_flag = real_ip(res); //check if the file was removed to hdd
+	
 
 	char myaddr[PATH_MAX] = {0};
 	net_getmyip(myaddr);
 
 	if (ZHT_LOOKUP_FAIL == status) { /* if not found in ZHT */
-		log_msg("\n ===========DFZ debug: _getattr() %s does not exist \n\n", path);
+	log_msg("\n ===========DFZ debug: _getattr() %s does not exist \n\n", path);
 
 		/*if path is an existing directory*/
-		char dirname[PATH_MAX] = {0};
-		strcpy(dirname, path);
-		strcat(dirname, "/");
+	char dirname[PATH_MAX] = {0};
+	strcpy(dirname, path);
+	strcat(dirname, "/");
 
-		log_msg("\n ===========DFZ debug: _getattr() dirname = %s. \n\n", dirname);
+	log_msg("\n ===========DFZ debug: _getattr() dirname = %s. \n\n", dirname);
 
-		char res[PATH_MAX] = {0};
-		int stat = zht_lookup(dirname, res);
+	char res[PATH_MAX] = {0};
+	int stat = zht_lookup(dirname, res);
+//new code
+		real_ip(res);	// get real ip
 
 		if (ZHT_LOOKUP_FAIL != stat) {
 			log_msg("\n ===========DFZ debug: _getattr() res = %s. \n\n", res);
@@ -228,34 +247,67 @@ int fusion_getattr(const char *path, struct stat *statbuf)
 		log_msg("\n ===========DFZ debug: _getattr() new directory %s/ created \n\n", fpath);
 	}
 	else { /* if file exists in ZHT */
-		log_msg("\n ===========DFZ debug: _getattr() zht_lookup() = %s. \n\n", res);
+	log_msg("\n ===========DFZ debug: _getattr() zht_lookup() = %s\n\n", res);
 
 		if (access(fpath, F_OK)) { /*if it isn't on this node, copy it over*/
+/*modified*/
+			if(hdd_flag){ //this file is in the remote hdd 
+				char fname_hdd[PATH_MAX] = {0};
+				get_hdd_path(fname_hdd, fpath); 
 
-			ffs_recvfile_c("udt", res, "9000", fpath, fpath);
+				ffs_recvfile_c("udt", res, "9000", fname_hdd, fpath);    //copy file through udt
+			}
+			else
+				ffs_recvfile_c("udt", res, "9000", fpath, fpath);    //copy file through udt
 
 			log_msg("\n ===========DFZ debug: _getattr() %s transferred from %s. \n\n",
-					fpath, res);
+				fpath, res);
 		}
 		else if (strcmp("/", path) /*even it's in local node, it could be outdated.*/
-				&& strcmp(res, myaddr)) {
-			ffs_recvfile_c("udt", res, "9000", fpath, fpath);
+		&& strcmp(res, myaddr)) {
 
+			if(hdd_flag){ //this file is in the remote hdd 
+				char fname_hdd[PATH_MAX] = {0};
+				get_hdd_path(fname_hdd, fpath); 
+				ffs_recvfile_c("udt", res, "9000", fname_hdd, fpath);    //copy file through udt
+			}
+			else
+				ffs_recvfile_c("udt", res, "9000", fpath, fpath);
+/*end modified*/
 			log_msg("\n ===========DFZ debug: _getattr() %s transferred from %s because local copy might be outdated. \n\n",
-					fpath, res);
+				fpath, res);
 		}
 		else {
 			/* let it be */
 			log_msg("\n ===========DFZ debug: _getattr() %s exists in local. \n\n", fpath);
 		}
 	}
-
-	retstat = lstat(fpath, statbuf);
+/*stats the file pointed to by path and fills in buf. If path is a symbolic link, then the link itself is stat-ed, not the file that it refers to.*/
+	retstat = lstat(fpath, statbuf);  //On success, zero is returned. On error, -1 is returned
 
 	if (retstat != 0)
 		retstat = fusion_error("fusion_getattr lstat");
 
-	log_stat(statbuf);
+/*new code*/
+
+//get the attribute of HDD file if there is one
+//This can also be done by the new function is_symlink_ssd()
+	char fname_hdd[PATH_MAX] = {0};
+        get_hdd_path(fname_hdd, fpath);   //self defined get_hdd_path function
+        if (S_ISLNK(statbuf->st_mode)      //Return non-zero if the mode is from a symbolic link
+        	&& access(fname_hdd, F_OK) != -1)
+        {
+        	retstat = lstat(fname_hdd, statbuf);
+        	if (retstat != 0)
+        	{
+        		retstat = fusion_error("schfs_getattr lstat");
+        	}
+        }
+
+/*end new code*/
+
+
+	log_stat(statbuf);     //log file artribute
 
 	return retstat;
 }
@@ -272,24 +324,24 @@ int fusion_getattr(const char *path, struct stat *statbuf)
 // null.  So, the size passed to to the system readlink() must be one
 // less than the size passed to fusion_readlink()
 // fusion_readlink() code by Bernardo F Costa (thanks!)
-int fusion_readlink(const char *path, char *link, size_t size) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_readlink(const char *path, char *link, size_t size) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("fusion_readlink(path=\"%s\", link=\"%s\", size=%d)\n", path, link,
-			size);
-	fusion_fullpath(fpath, path);
+ 	log_msg("fusion_readlink(path=\"%s\", link=\"%s\", size=%d)\n", path, link,
+ 		size);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = readlink(fpath, link, size - 1);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_readlink readlink");
-	else {
-		link[retstat] = '\0';
-		retstat = 0;
-	}
+ 	retstat = readlink(fpath, link, size - 1);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_readlink readlink");
+ 	else {
+ 		link[retstat] = '\0';
+ 		retstat = 0;
+ 	}
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Create a file node
  *
@@ -297,61 +349,65 @@ int fusion_readlink(const char *path, char *link, size_t size) {
  * creation of all non-directory, non-symlink nodes.
  */
 // shouldn't that comment be "if" there is no.... ?
-int fusion_mknod(const char *path, mode_t mode, dev_t dev) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_mknod(const char *path, mode_t mode, dev_t dev) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_mknod(path=\"%s\", mode=0%3o, dev=%lld)\n", path, mode, dev);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_mknod(path=\"%s\", mode=0%3o, dev=%lld)\n", path, mode, dev);
+ 	fusion_fullpath(fpath, path);
 
 	// On Linux this could just be 'mknod(path, mode, rdev)' but this
 	//  is more portable
-	if (S_ISREG(mode)) {
-		retstat = open(fpath, O_CREAT | O_EXCL | O_WRONLY, mode);
-		if (retstat < 0)
-			retstat = fusion_error("fusion_mknod open");
-		else {
-			retstat = close(retstat);
-			if (retstat < 0)
-				retstat = fusion_error("fusion_mknod close");
-		}
-	} else if (S_ISFIFO(mode)) {
-		retstat = mkfifo(fpath, mode);
-		if (retstat < 0)
-			retstat = fusion_error("fusion_mknod mkfifo");
-	} else {
-		retstat = mknod(fpath, mode, dev);
-		if (retstat < 0)
-			retstat = fusion_error("fusion_mknod mknod");
-	}
+ 	if (S_ISREG(mode)) {
+ 		retstat = open(fpath, O_CREAT | O_EXCL | O_WRONLY, mode);
+ 		if (retstat < 0)
+ 			retstat = fusion_error("fusion_mknod open");
+ 		else {
+ 			retstat = close(retstat);
+ 			if (retstat < 0)
+ 				retstat = fusion_error("fusion_mknod close");
+ 		}
+ 	} else if (S_ISFIFO(mode)) {
+ 		retstat = mkfifo(fpath, mode);
+ 		if (retstat < 0)
+ 			retstat = fusion_error("fusion_mknod mkfifo");
+ 	} else {
+ 		retstat = mknod(fpath, mode, dev);
+ 		if (retstat < 0)
+ 			retstat = fusion_error("fusion_mknod mknod");
+ 	}
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /**
  * Create a directory
  *
  * 		DFZ: updated for ZHT
  */
-int fusion_mkdir(const char *path, mode_t mode)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_mkdir(const char *path, mode_t mode)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_mkdir(path=\"%s\", mode=0%3o)\n", path, mode);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_mkdir(path=\"%s\", mode=0%3o)\n", path, mode);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = mkdir(fpath, mode);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_mkdir mkdir");
+ 	retstat = mkdir(fpath, mode);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_mkdir mkdir");
 
+/*new code*/
+	// We need to replicate this directory in hdd also:
+ 	copy_dir_ssd(fpath, mode);
+/*end new code*/
 
 	/* update ZHT with dir changes */
-	char parentpath[PATH_MAX] = {0};
-	char curpath[PATH_MAX] = {0};
-	char fullpath[PATH_MAX] = {0};
-	char *pch = strrchr(path, '/');
-	strncpy(parentpath, path, pch - path + 1);
+ 	char parentpath[PATH_MAX] = {0};
+ 	char curpath[PATH_MAX] = {0};
+ 	char fullpath[PATH_MAX] = {0};
+	char *pch = strrchr(path, '/');   //Locate last occurrence of character in string
+	strncpy(parentpath, path, pch - path + 1);   //path is like: /home/roy
 	strcpy(curpath, pch + 1);
 	strcat(curpath, "/");
 	strcpy(fullpath, path);
@@ -371,28 +427,30 @@ int fusion_mkdir(const char *path, mode_t mode)
  *
  * 		TODO: deleting a non-empty directory will cause some problems
  */
-int fusion_rmdir(const char *path)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_rmdir(const char *path)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("fusion_rmdir(path=\"%s\")\n", path);
-	fusion_fullpath(fpath, path);
+ 	log_msg("fusion_rmdir(path=\"%s\")\n", path);
+ 	fusion_fullpath(fpath, path);
 
 	/*check ZHT if <path/> is empty */
-	char dirname[PATH_MAX] = {0};
-	strcpy(dirname, path);
-	strcat(dirname, "/");
+ 	char dirname[PATH_MAX] = {0};
+ 	strcpy(dirname, path);
+ 	strcat(dirname, "/");
 
-	char val[PATH_MAX] = {0};
-	int stat = zht_lookup(dirname, val);
+ 	char val[PATH_MAX] = {0};
+ 	int stat = zht_lookup(dirname, val);
+//new code
+	real_ip(val); //get real ip
 
 	if (ZHT_LOOKUP_FAIL != stat
-			&& !strcmp(" ", val)) {
+		&& !strcmp(" ", val)) {
 		char rmcmd[PATH_MAX] = {0};
-		strcpy(rmcmd, "rm -r ");
-		strcat(rmcmd, fpath);
-		system(rmcmd);
+	strcpy(rmcmd, "rm -r ");
+	strcat(rmcmd, fpath);
+		system(rmcmd);           //remove dir here
 	}
 	else {
 		fusion_error("fusion_rmdir() directory not empty or not a directory");
@@ -401,6 +459,17 @@ int fusion_rmdir(const char *path)
 //	retstat = rmdir(fpath);
 //	if (retstat < 0)
 //		retstat = fusion_error("fusion_rmdir rmdir");
+
+/*new code*/
+	// Need to remove dir in hdd
+        // Note that we don't need to check if a directory is a symbolic link
+	char hdd_fpath[PATH_MAX] = {0};
+	get_hdd_path(hdd_fpath, fpath);
+
+	retstat = rmdir(hdd_fpath);
+	if (retstat < 0)
+		retstat = fusion_error("schfs_rmdir rmdir hdd");
+/*end new code*/
 
 	/* update ZHT */
 	char parentpath[PATH_MAX] = {0};
@@ -428,21 +497,60 @@ int fusion_rmdir(const char *path)
  * 		2) don't touch the remote file when updating the meta data, but do a batch job in each node to
  * 			self-check dangling files
  */
-int fusion_unlink(const char *path)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
-	printf("Unlinking file");
-	log_msg("fusion_unlink(path=\"%s\")\n", path);
-	fusion_fullpath(fpath, path);
+ int fusion_unlink(const char *path)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
+
+ 	log_msg("fusion_unlink(path=\"%s\")\n", path);
+ 	fusion_fullpath(fpath, path);
 
 	/*if this file doesn't exist*/
-	char val[PATH_MAX] = {0};
-	int stat = zht_lookup(path, val);
+ 	char val[PATH_MAX] = {0};
+ 	int stat = zht_lookup(path, val);
+//new code
+	real_ip(val); //get real ip
+
 	if (ZHT_LOOKUP_FAIL == stat) {
 		fusion_error("_unlink() trying to remove a nonexistent file");
 		return -1;
 	}
+
+/*new code*/
+	// Need to unlink the file in hdd also, if applicable
+	if (is_symlink_ssd(fpath))
+	{
+		char hdd_fpath[PATH_MAX] = {0};
+		get_hdd_path(hdd_fpath, fpath);
+
+		retstat = unlink(hdd_fpath);
+		if (retstat < 0)
+			retstat = fusion_error("schfs_unlink unlink hdd");        
+	}
+
+	if (MODE_ARC)
+	{
+		rmelem_arc(fpath);
+	}
+	// Update the cache Q:
+ 	else if (MODE_SCC)
+	{
+		rmelem_scc(fpath);
+	}
+	else if (MODE_LRU)
+	{
+		rmelem_lru(fpath);
+	}
+	else
+	{
+		rmelem_lfu(fpath);
+	}
+
+
+        // This is a key function, show debug info:
+	log_msg("\n============ DFZ DEBUG ==============\n");
+	print_debug();
+/*end new code*/
 
 
 	/*remove the file from its parent dir in ZHT*/
@@ -455,21 +563,41 @@ int fusion_unlink(const char *path)
 	/*remove the file entry from ZHT*/
 	char oldaddr[PATH_MAX] = {0};
 	zht_lookup(path, oldaddr);
+//new code
+	int hdd_flag = real_ip(oldaddr); //get real ip, and check if the file was removed to hdd
 	zht_remove(path);
 
 	/*if it's a local operation, we are done here*/
 	char myip[PATH_MAX] = {0};
 	net_getmyip(myip);
 	if (!strcmp(myip, oldaddr)) {
-		retstat = unlink(fpath);
+		retstat = unlink(fpath);      //local unlink here
 		if (retstat < 0)
 			retstat = fusion_error("fusion_unlink unlink");
 		return retstat;
 	}
 
+/*modified*/
 	/*or we need to remove the remote file*/
-	ffs_rmfile_c("udt", oldaddr, "9000", fpath);
 
+	if(hdd_flag)
+	{ //this file is in the remote hdd 
+		char fname_hdd[PATH_MAX] = {0};
+		get_hdd_path(fname_hdd, fpath); 
+		
+		ffs_rmfile_c("udt", oldaddr, "9000", fname_hdd); //this file is in the remote hdd
+	}
+	else
+	{
+		ffs_rmfile_c("udt", oldaddr, "9000", fpath);  // this file is in the remote ssd 
+	}
+
+	retstat = unlink(fpath);      //unlink transfered file here
+	if (retstat < 0)
+	{
+		retstat = fusion_error("fusion_unlink unlink");
+	}
+/*end modified*/
 	return retstat;
 }
 
@@ -484,7 +612,6 @@ int fusion_symlink(const char *path, const char *link) {
 
 	log_msg("\nfusion_symlink(path=\"%s\", link=\"%s\")\n", path, link);
 	fusion_fullpath(flink, link);
-
 	retstat = symlink(path, flink);
 	if (retstat < 0)
 		retstat = fusion_error("fusion_symlink symlink");
@@ -503,12 +630,64 @@ int fusion_rename(const char *path, const char *newpath) {
 	fusion_fullpath(fpath, path);
 	fusion_fullpath(fnewpath, newpath);
 
-	retstat = rename(fpath, fnewpath);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_rename rename");
+/*new code*/
+	// If fpath is a symbolic link, we need to update the HDD file name
+	if (is_symlink_ssd(fpath))
+	{
+                // Rename the hdd file
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
 
-	return retstat;
-}
+		char fnewpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fnewpath_hdd, fnewpath);
+
+		retstat = rename(fpath_hdd, fnewpath_hdd);
+		if (retstat < 0)
+			retstat = fusion_error("schfs_rename rename");
+		// Relink the hdd file
+                retstat = unlink(fnewpath);     //why do we need unlink, this is new path?
+                if (retstat < 0)
+                	retstat = fusion_error("schfs_rename rename");
+
+                retstat = symlink(fnewpath_hdd, fnewpath);
+                if (retstat < 0)
+                	retstat = fusion_error("schfs_rename rename");
+            }
+	// If fpath is not a symbolic link, it means fpath is in SSD which
+        // indicates we should update the cache Q
+            else
+            {
+            	if(MODE_ARC)
+            	{
+            		inode_t *inode = findelem_arc(fpath);
+            		strcpy(inode->fname, fnewpath);
+            	}
+                
+                else if(MODE_SCC)
+		{	
+    		    	inode_t *inode = findelem_scc(fpath);
+                    	strcpy(inode->fname, fnewpath);
+		}
+            	else if (MODE_LRU)
+            	{
+            		inode_t *inode = findelem_lru(fpath);
+            		strcpy(inode->fname, fnewpath);
+            	}
+            	else
+            	{
+            		inode_t *inode = findelem_lfu(fpath);
+            		strcpy(inode->fname, fnewpath);
+            	}
+            }
+/*end new code*/
+
+
+            retstat = rename(fpath, fnewpath);
+            if (retstat < 0)
+            	retstat = fusion_error("fusion_rename rename");
+
+            return retstat;
+        }
 
 /** Create a hard link to a file */
 int fusion_link(const char *path, const char *newpath) {
@@ -518,6 +697,18 @@ int fusion_link(const char *path, const char *newpath) {
 	log_msg("\nfusion_link(path=\"%s\", newpath=\"%s\")\n", path, newpath);
 	fusion_fullpath(fpath, path);
 	fusion_fullpath(fnewpath, newpath);
+
+/*new code*/
+// Clearly we don't want to hard link a symbolic link
+	if (is_symlink_ssd(fpath))
+	{
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
+		strcpy(fpath, fpath_hdd);
+	}
+
+/*end new code*/
+
 
 	retstat = link(fpath, fnewpath);
 	if (retstat < 0)
@@ -534,6 +725,20 @@ int fusion_chmod(const char *path, mode_t mode) {
 	log_msg("\nfusion_chmod(fpath=\"%s\", mode=0%03o)\n", path, mode);
 	fusion_fullpath(fpath, path);
 
+/*new code*/
+// Update HDD file if SSD file is a symbolic link
+	if (is_symlink_ssd(fpath))
+	{
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
+
+		retstat = chmod(fpath_hdd, mode);
+		if (retstat < 0)
+			retstat = fusion_error("schfs_chmod chmod");              
+	}
+/*end new code*/
+
+
 	retstat = chmod(fpath, mode);
 	if (retstat < 0)
 		retstat = fusion_error("fusion_chmod chmod");
@@ -542,14 +747,26 @@ int fusion_chmod(const char *path, mode_t mode) {
 }
 
 /** Change the owner and group of a file */
-int fusion_chown(const char *path, uid_t uid, gid_t gid)
-
-{
+int fusion_chown(const char *path, uid_t uid, gid_t gid){
 	int retstat = 0;
 	char fpath[PATH_MAX] = {0};
 
 	log_msg("\nfusion_chown(path=\"%s\", uid=%d, gid=%d)\n", path, uid, gid);
 	fusion_fullpath(fpath, path);
+
+/*new code*/
+
+// update HDD file if SSD file is a symbolic link
+	if (is_symlink_ssd(fpath))
+	{
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
+
+		retstat = chown(fpath_hdd, uid, gid);
+		if (retstat < 0)
+			retstat = fusion_error("schfs_chown chown");
+	}
+/*end new code*/
 
 	retstat = chown(fpath, uid, gid);
 	if (retstat < 0)
@@ -566,6 +783,16 @@ int fusion_truncate(const char *path, off_t newsize) {
 	log_msg("\nfusion_truncate(path=\"%s\", newsize=%lld)\n", path, newsize);
 	fusion_fullpath(fpath, path);
 
+/*new code*/
+//if it's a symbol link:
+	if (is_symlink_ssd(fpath))
+	{
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
+		strcpy(fpath, fpath_hdd);
+	}
+/*end new code*/
+
 	retstat = truncate(fpath, newsize);
 	if (retstat < 0)
 		fusion_error("fusion_truncate truncate");
@@ -581,6 +808,20 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 
 	log_msg("\nfusion_utime(path=\"%s\", ubuf=0x%08x)\n", path, ubuf);
 	fusion_fullpath(fpath, path);
+
+/*new code*/
+// Update HDD file if SSD file is a symbolic link
+	if (is_symlink_ssd(fpath))
+	{
+		char fpath_hdd[PATH_MAX] = {0};
+		get_hdd_path(fpath_hdd, fpath);
+
+		retstat = utime(fpath_hdd, ubuf);
+		if (retstat < 0)
+			retstat = fusion_error("schfs_utime utime");
+	}
+
+/*end new code*/
 
 	retstat = utime(fpath, ubuf);
 	if (retstat < 0)
@@ -605,24 +846,134 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  *		2) if the file doesn't exist, then _create() should be called
  *			rather than _open()
  */
-int fusion_open(const char *path, struct fuse_file_info *fi)
-{
-	int retstat = 0;
-	int fd;
-	char fpath[PATH_MAX] = {0};
+ int fusion_open(const char *path, struct fuse_file_info *fi)
+ {
+ 	int retstat = 0;
+ 	int fd;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_open(path\"%s\", fi=0x%08x)\n", path, fi);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_open(path\"%s\", fi=0x%08x)\n", path, fi);
+ 	fusion_fullpath(fpath, path);
 
-	fd = open(fpath, fi->flags);
-	if (fd < 0)
-		retstat = fusion_error("fusion_open open");
+/*new code*/
+ 	// If the requested file is in HDD, swap it from HDD to SSD     
+ 	if (is_symlink_ssd(fpath))
+ 	{
+                // If SSD usage is still too high, swap ssd->hdd
 
-	fi->fh = fd;
-	log_fi(fi);
+ 		if(MODE_ARC)
+ 		{
+ 			while(ssd_is_full() && (arc_cache_has_files()))
+ 			{
+ 				char fname[PATH_MAX] = {0};
+ 				char myip[PATH_MAX] = {0};
+ 				remque_arc(fname);
+	 			move_file_ssd(fname); 
+	 			net_getmyip(myip);
+	 			strcat(myip,"/");
+	 			zht_update(path, myip);	
+ 			}
+ 			
+ 		}
 
-	return retstat;
-}
+ 		else if(MODE_SCC){
+ 			while (ssd_is_full() && (FUSION_DATA->scc_head != NULL))
+ 			{
+ 				char fname[PATH_MAX] = {0};
+				//get file name, update Q
+ 				remque_scc(fname);
+
+ 				char fname_ssd[PATH_MAX] = {0};
+ 				fusion_fullpath(fname_ssd, fname);
+
+				//remove file from ssd to hdd	
+ 				move_file_ssd(fname_ssd);
+
+				//update zht with special symbol to denote the swaped(to hdd) file
+ 				char myip[PATH_MAX] = {0};
+ 				net_getmyip(myip);
+ 				strcat(myip,"/");
+ 				zht_update(fname, myip);
+
+ 			}
+ 		}
+ 		else if (MODE_LRU)
+ 		{
+ 			while (ssd_is_full() && (FUSION_DATA->lru_head != NULL))
+ 			{
+                                // Move LRU Q head file to hdd
+ 				move_file_ssd(FUSION_DATA->lru_head->fname);
+
+                                // Update LRU
+ 				remque_lru();
+
+				//update zht with special symbol to denote the swaped(to hdd) file
+ 				char myip[PATH_MAX] = {0};
+ 				net_getmyip(myip);
+ 				strcat(myip,"/");
+ 				zht_update(path, myip);
+ 			}
+ 		}
+ 		else
+ 		{
+ 			while (ssd_is_full() && (FUSION_DATA->lfu_head != NULL))
+ 			{
+                                // Move LFU Q head file to ssd
+ 				move_file_ssd(FUSION_DATA->lfu_head->fname);
+
+                                // Update LFU
+ 				remque_lfu();
+ 			}
+ 		}
+
+                // And if the used SSD space is still too high, pop up a warning
+ 		if (ssd_is_full())
+ 		{
+ 			log_msg("\n\t Warning: SSD space is close to limit. \n ");
+ 		}
+
+                // Now we are ready to move the file from HDD to SSD
+ 		move_file_hdd(fpath);
+ 	}
+
+/*end new code*/
+
+
+ 	fd = open(fpath, fi->flags);
+ 	if (fd < 0)
+ 		retstat = fusion_error("fusion_open open");
+
+ 	fi->fh = fd;
+ 	log_fi(fi);
+
+/*new code*/
+
+ 	// Need to update the LRU Q
+ 	inode_t *elem = (inode_t *)malloc(sizeof(inode_t));
+ 	strcpy(elem->fname, fpath);
+
+ 	if(MODE_ARC)
+ 	{
+ 		insque_arc(elem);
+ 	}
+ 	else if(MODE_SCC)
+ 	{	
+ 		insque_scc(path);
+ 	}
+ 	else if (MODE_LRU)
+ 	{
+ 		insque_lru(elem);
+ 	}
+ 	else
+ 	{
+ 		elem->freq = 1;
+ 		insque_lfu(elem);
+ 	}
+
+/*end new code*/
+
+ 	return retstat;
+ }
 
 /** Read data from an open file
  *
@@ -645,22 +996,22 @@ int fusion_open(const char *path, struct fuse_file_info *fi)
  * DFZ: for FusionFS, no need to modify _read(). The file synchronization
  * 		is done in _getattr() and _release()
  */
-int fusion_read(const char *path, char *buf, size_t size, off_t offset,
-		struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_read(const char *path, char *buf, size_t size, off_t offset,
+ 	struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg(
-			"\nfusion_read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n",
-			path, buf, size, offset, fi);
+ 	log_msg(
+ 		"\nfusion_read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n",
+ 		path, buf, size, offset, fi);
 	// no need to get fpath on this one, since I work from fi->fh not the path
-	log_fi(fi);
+ 	log_fi(fi);
 
-	retstat = pread(fi->fh, buf, size, offset);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_read read");
+ 	retstat = pread(fi->fh, buf, size, offset);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_read read");
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Write data to an open file
  *
@@ -677,22 +1028,22 @@ int fusion_read(const char *path, char *buf, size_t size, off_t offset,
  * DFZ: for FusionFS, no need to modify _write(). The file synchronization
  * 		is done in _getattr() and _release()
  */
-int fusion_write(const char *path, const char *buf, size_t size, off_t offset,
-		struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_write(const char *path, const char *buf, size_t size, off_t offset,
+ 	struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg(
-			"\nfusion_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n",
-			path, buf, size, offset, fi);
+ 	log_msg(
+ 		"\nfusion_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n",
+ 		path, buf, size, offset, fi);
 	// no need to get fpath on this one, since I work from fi->fh not the path
-	log_fi(fi);
+ 	log_fi(fi);
 
-	retstat = pwrite(fi->fh, buf, size, offset);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_write pwrite");
+ 	retstat = pwrite(fi->fh, buf, size, offset);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_write pwrite");
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Get file system statistics
  *
@@ -701,22 +1052,34 @@ int fusion_write(const char *path, const char *buf, size_t size, off_t offset,
  * Replaced 'struct statfs' parameter with 'struct statvfs' in
  * version 2.5
  */
-int fusion_statfs(const char *path, struct statvfs *statv) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_statfs(const char *path, struct statvfs *statv) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_statfs(path=\"%s\", statv=0x%08x)\n", path, statv);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_statfs(path=\"%s\", statv=0x%08x)\n", path, statv);
+ 	fusion_fullpath(fpath, path);
+
+/*new code*/
+	// Bypass if the SSD file is a symbolic link
+ 	if (is_symlink_ssd(fpath))
+ 	{
+ 		char fpath_hdd[PATH_MAX] = {0};
+ 		get_hdd_path(fpath_hdd, fpath);
+ 		strcpy(fpath, fpath_hdd);
+ 	}
+
+/*new code*/
+
 
 	// get stats for underlying filesystem
-	retstat = statvfs(fpath, statv);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_statfs statvfs");
+ 	retstat = statvfs(fpath, statv);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_statfs statvfs");
 
-	log_statvfs(statv);
+ 	log_statvfs(statv);
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Possibly flush cached data
  *
@@ -741,16 +1104,16 @@ int fusion_statfs(const char *path, struct statvfs *statv) {
  *
  * Changed in version 2.2
  */
-int fusion_flush(const char *path, struct fuse_file_info *fi)
-{
-	int retstat = 0;
+ int fusion_flush(const char *path, struct fuse_file_info *fi)
+ {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_flush(path=\"%s\", fi=0x%08x)\n", path, fi);
+ 	log_msg("\nfusion_flush(path=\"%s\", fi=0x%08x)\n", path, fi);
 	// no need to get fpath on this one, since I work from fi->fh not the path
-	log_fi(fi);
+ 	log_fi(fi);
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Release an open file
  *
@@ -773,27 +1136,27 @@ int fusion_flush(const char *path, struct fuse_file_info *fi)
  * 		to update the value in ZHT. We also need to remove the old
  * 		copy in its previous node from where it's copied from.
  */
-int fusion_release(const char *path, struct fuse_file_info *fi)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
-	fusion_fullpath(fpath, path);
+ int fusion_release(const char *path, struct fuse_file_info *fi)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
+ 	fusion_fullpath(fpath, path);
 
-	log_msg("\nfusion_release(path=\"%s\", fi=0x%08x)\n", path, fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_release(path=\"%s\", fi=0x%08x)\n", path, fi);
+ 	log_fi(fi);
 
 	/*is this file written?*/
-	int iswritten = 0;
-	int flags = fcntl(fi->fh, F_GETFL);
-	if (-1 == flags) {
+ 	int iswritten = 0;
+ 	int flags = fcntl(fi->fh, F_GETFL);
+ 	if (-1 == flags) {
 		/*I don't know what to do... failed to get the old flags */
-		fusion_error("_release(): fd lost. ");
-	}
+ 		fusion_error("_release(): fd lost. ");
+ 	}
 	/*
-	O_ACCMODE<0003>：读写文件操作时，用于取出flag的低2位
-	O_RDONLY<00>：只读打开
-	O_WRONLY<01>：只写打开
-	O_RDWR<02>：读写打开
+	O_ACCMODE<0003>\A3\BA\B6\C1写\CE募\FE\B2\D9\D7\F7时\A3\AC\D3\C3\D3\DA取\B3\F6flag\B5牡\CD2位
+	O_RDONLY<00>\A3\BA只\B6\C1\B4\F2\BF\AA
+	O_WRONLY<01>\A3\BA只写\B4\F2\BF\AA
+	O_RDWR<02>\A3\BA\B6\C1写\B4\F2\BF\AA
 	 */
 	else if (O_ACCMODE & flags) {
 		iswritten = 1;
@@ -810,15 +1173,22 @@ int fusion_release(const char *path, struct fuse_file_info *fi)
 
 	char nodeaddr[PATH_MAX] = {0};
 	zht_lookup(path, nodeaddr);
+//new code
+	real_ip(nodeaddr); //get real ip
 
-	if (!strcmp(myip, nodeaddr)) {
+	int remote = strcmp(myip, nodeaddr);
+	log_msg("\n=========debug _release(): myip=%s-- nodeaddr=%s-- remote=%d\n\n", myip, nodeaddr,remote);
+
+	if (!remote) {       //address is same, it's local, done
 		return retstat;
-	}
+}
 
 	/*dealing with the remote copy*/
 	if (iswritten) { /*so it's a write mode*/
 		char oldip[PATH_MAX] = {0};
 		zht_lookup(path, oldip);
+		//new code
+		real_ip(oldip); //get real ip
 
 		/*update this file's node value in ZHT*/
 		char myip[PATH_MAX] = {0};
@@ -840,12 +1210,12 @@ int fusion_release(const char *path, struct fuse_file_info *fi)
 		 * prevent from the issue on removing multiple files
 		 * across different nodes. So, we remove the local file
 		 */
-		unlink(fpath);
-		log_msg("\n=========DFZ debug _release(): %s unlinked from local node. \n\n", fpath);
-	}
+		 unlink(fpath);
+		 log_msg("\n=========DFZ debug _release(): %s unlinked from local node. \n\n", fpath);
+		}
 
-	return retstat;
-}
+		return retstat;
+	}
 
 /** Synchronize file contents
  *
@@ -854,96 +1224,187 @@ int fusion_release(const char *path, struct fuse_file_info *fi)
  *
  * Changed in version 2.2
  */
-int fusion_fsync(const char *path, int datasync, struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_fsync(const char *path, int datasync, struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_fsync(path=\"%s\", datasync=%d, fi=0x%08x)\n", path, datasync,
-			fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_fsync(path=\"%s\", datasync=%d, fi=0x%08x)\n", path, datasync,
+ 		fi);
+ 	log_fi(fi);
 
-	if (datasync)
-		retstat = fdatasync(fi->fh);
-	else
-		retstat = fsync(fi->fh);
+/*modified code*/
+	// Need to check if it's in HDD or SSD
+ 	char fpath_ssd[PATH_MAX] = {0};
+ 	char fpath_hdd[PATH_MAX] = {0};
+ 	fusion_fullpath(fpath_ssd, path);
+ 	get_hdd_path(fpath_hdd, fpath_ssd);
 
-	if (retstat < 0)
-		fusion_error("fusion_fsync fsync");
+ 	struct stat sb;
+ 	if (lstat(fpath_ssd, &sb) == -1)
+ 	{
+ 		log_msg("    lstat error line#%d", __LINE__);
+ 	}
 
-	return retstat;
-}
+ 	if (S_ISLNK(sb.st_mode)
+ 		&& (access(fpath_hdd, F_OK) != -1))
+ 	{
+ 		int fd = open(fpath_hdd, O_RDONLY);
+
+ 		if (datasync)
+ 			retstat = fdatasync(fd);
+ 		else
+ 			retstat = fsync(fd);
+
+ 		close(fd);
+ 	}
+ 	else{
+
+ 		if (datasync)
+ 			retstat = fdatasync(fi->fh);
+ 		else
+ 			retstat = fsync(fi->fh);
+ 	}
+
+/*end modified code*/
+
+ 	if (retstat < 0)
+ 		fusion_error("fusion_fsync fsync");
+
+ 	return retstat;
+ }
 
 /** Set extended attributes */
-int fusion_setxattr(const char *path, const char *name, const char *value,
-		size_t size, int flags) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_setxattr(const char *path, const char *name, const char *value,
+ 	size_t size, int flags) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg(
-			"\nfusion_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", size=%d, flags=0x%08x)\n",
-			path, name, value, size, flags);
-	fusion_fullpath(fpath, path);
+ 	log_msg(
+ 		"\nfusion_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", size=%d, flags=0x%08x)\n",
+ 		path, name, value, size, flags);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = lsetxattr(fpath, name, value, size, flags);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_setxattr lsetxattr");
+/*modified code*/
+	// Again, we need to redirect this to HDD is applicable
+ 	struct stat sb;
+ 	char fpath_hdd[PATH_MAX] = {0};
+ 	get_hdd_path(fpath_hdd, fpath);
+ 	if (lstat(fpath, &sb) == -1) {
+ 		log_msg("    stat error line#%d", __LINE__);
+ 	}
+ 	if (S_ISLNK(sb.st_mode)
+ 		&& (access(fpath_hdd, F_OK) != -1))
+ 	{
+ 		retstat = lsetxattr(fpath_hdd, name, value, size, flags);
+ 	}
+ 	else{
+ 		retstat = lsetxattr(fpath, name, value, size, flags);
+ 	}
 
-	return retstat;
-}
+/*end modified code*/
+
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_setxattr lsetxattr");
+
+ 	return retstat;
+ }
 
 /** Get extended attributes */
-int fusion_getxattr(const char *path, const char *name, char *value, size_t size) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_getxattr(const char *path, const char *name, char *value, size_t size) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg(
-			"\nfusion_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, size = %d)\n",
-			path, name, value, size);
-	fusion_fullpath(fpath, path);
+ 	log_msg(
+ 		"\nfusion_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, size = %d)\n",
+ 		path, name, value, size);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = lgetxattr(fpath, name, value, size);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_getxattr lgetxattr");
-	else
-		log_msg("    value = \"%s\"\n", value);
+/*modified code*/
 
-	return retstat;
-}
+	// Again, we need to redirect this to HDD is applicable
+ 	struct stat sb;
+ 	char fpath_hdd[PATH_MAX] = {0};
+ 	get_hdd_path(fpath_hdd, fpath);
+ 	if (lstat(fpath, &sb) == -1)
+ 	{
+ 		log_msg("    stat error line#%d", __LINE__);
+ 	}
+ 	if (S_ISLNK(sb.st_mode)
+ 		&& (access(fpath_hdd, F_OK) != -1))
+ 	{
+ 		retstat = lgetxattr(fpath_hdd, name, value, size);
+ 	}
+ 	else{
+ 		retstat = lgetxattr(fpath, name, value, size);
+ 	}
+
+/*end modified code*/
+
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_getxattr lgetxattr");
+ 	else
+ 		log_msg("    value = \"%s\"\n", value);
+
+ 	return retstat;
+ }
 
 /** List extended attributes */
-int fusion_listxattr(const char *path, char *list, size_t size) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
-	char *ptr;
+ int fusion_listxattr(const char *path, char *list, size_t size) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
+ 	char *ptr;
 
-	log_msg("fusion_listxattr(path=\"%s\", list=0x%08x, size=%d)\n", path, list,
-			size);
-	fusion_fullpath(fpath, path);
+ 	log_msg("fusion_listxattr(path=\"%s\", list=0x%08x, size=%d)\n", path, list,
+ 		size);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = llistxattr(fpath, list, size);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_listxattr llistxattr");
+/*new code*/
+	 // Update HDD path if SSD path is a symbolic link
+ 	if (is_symlink_ssd(fpath))
+ 	{
+ 		char fpath_hdd[PATH_MAX] = {0};
+ 		get_hdd_path(fpath_hdd, fpath);
+ 		strcpy(fpath, fpath_hdd);
+ 	}
 
-	log_msg("    returned attributes (length %d):\n", retstat);
-	for (ptr = list; ptr < list + retstat; ptr += strlen(ptr) + 1)
-		log_msg("    \"%s\"\n", ptr);
+/*end new code*/
 
-	return retstat;
-}
+ 	retstat = llistxattr(fpath, list, size);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_listxattr llistxattr");
+
+ 	log_msg("    returned attributes (length %d):\n", retstat);
+ 	for (ptr = list; ptr < list + retstat; ptr += strlen(ptr) + 1)
+ 		log_msg("    \"%s\"\n", ptr);
+
+ 	return retstat;
+ }
 
 /** Remove extended attributes */
-int fusion_removexattr(const char *path, const char *name) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_removexattr(const char *path, const char *name) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_removexattr(path=\"%s\", name=\"%s\")\n", path, name);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_removexattr(path=\"%s\", name=\"%s\")\n", path, name);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = lremovexattr(fpath, name);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_removexattr lrmovexattr");
+/*new code*/
 
-	return retstat;
-}
+	 //update HDD path if SSD path is a symbolic link
+ 	if (is_symlink_ssd(fpath))
+ 	{
+ 		char fpath_hdd[PATH_MAX] = {0};
+ 		get_hdd_path(fpath_hdd, fpath);
+ 		strcpy(fpath, fpath_hdd);
+ 	}
+
+/*end new code*/
+
+ 	retstat = lremovexattr(fpath, name);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_removexattr lrmovexattr");
+
+ 	return retstat;
+ }
 
 /** Open directory
  *
@@ -952,18 +1413,20 @@ int fusion_removexattr(const char *path, const char *name) {
  *
  * Introduced in version 2.3
  */
-int fusion_opendir(const char *path, struct fuse_file_info *fi)
-{
-	DIR *dp;
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_opendir(const char *path, struct fuse_file_info *fi)
+ {
+ 	DIR *dp;
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_opendir(path=\"%s\", fi=0x%08x)\n", path, fi);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_opendir(path=\"%s\", fi=0x%08x)\n", path, fi);
+ 	fusion_fullpath(fpath, path);
 
 	/*if path exists in ZHT, create it locally*/
-	char res[PATH_MAX] = {0};
-	int stat = zht_lookup(path, res);
+ 	char res[PATH_MAX] = {0};
+ 	int stat = zht_lookup(path, res);
+//new code
+	real_ip(res); //get real ip
 
 	if (ZHT_LOOKUP_FAIL != stat) {
 		mkdir(fpath, 0775);
@@ -985,7 +1448,7 @@ int fusion_opendir(const char *path, struct fuse_file_info *fi)
 }
 
 /** Read directory
- *
+ *9
  * This supersedes the old getdir() interface.  New applications
  * should use this.
  *
@@ -1005,26 +1468,28 @@ int fusion_opendir(const char *path, struct fuse_file_info *fi)
  *
  * Introduced in version 2.3
  */
-int fusion_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
-		off_t offset, struct fuse_file_info *fi)
-{
-	log_msg(
-			"\nfusion_readdir(path=\"%s\", buf=0x%08x, filler=0x%08x, offset=%lld, fi=0x%08x)\n",
-			path, buf, filler, offset, fi);
+ int fusion_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+ 	off_t offset, struct fuse_file_info *fi)
+ {
+ 	log_msg(
+ 		"\nfusion_readdir(path=\"%s\", buf=0x%08x, filler=0x%08x, offset=%lld, fi=0x%08x)\n",
+ 		path, buf, filler, offset, fi);
 
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
-	fusion_fullpath(fpath, path);
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
+ 	fusion_fullpath(fpath, path);
 
 	/* append a '/' if it's not the root directory */
-	char dirname[PATH_MAX] = {0};
-	strcpy(dirname, path);
-	if (strcmp("/", dirname)) {
+ 	char dirname[PATH_MAX] = {0};
+ 	strcpy(dirname, path);
+	if (strcmp("/", dirname)) {           //dirname is not root dir
 		strcat(dirname, "/");
 	}
 
 	char filelist[PATH_MAX] = {0};
 	int stat = zht_lookup(dirname, filelist);
+//don't call real ip here, filelist here is an indentity list of files 
+//	real_ip(filelist); //get real ip
 
 	if (ZHT_LOOKUP_FAIL == stat)
 		log_msg("\n ===========DFZ debug: fusion_readdir() filelist not found in ZHT \n\n");
@@ -1103,16 +1568,16 @@ int fusion_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
  *
  * Introduced in version 2.3
  */
-int fusion_releasedir(const char *path, struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_releasedir(const char *path, struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_releasedir(path=\"%s\", fi=0x%08x)\n", path, fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_releasedir(path=\"%s\", fi=0x%08x)\n", path, fi);
+ 	log_fi(fi);
 
-	closedir((DIR *) (uintptr_t) fi->fh);
+ 	closedir((DIR *) (uintptr_t) fi->fh);
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /** Synchronize directory contents
  *
@@ -1123,15 +1588,15 @@ int fusion_releasedir(const char *path, struct fuse_file_info *fi) {
  */
 // when exactly is this called?  when a user calls fsync and it
 // happens to be a directory? ???
-int fusion_fsyncdir(const char *path, int datasync, struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_fsyncdir(const char *path, int datasync, struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_fsyncdir(path=\"%s\", datasync=%d, fi=0x%08x)\n", path,
-			datasync, fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_fsyncdir(path=\"%s\", datasync=%d, fi=0x%08x)\n", path,
+ 		datasync, fi);
+ 	log_fi(fi);
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /**
  * Initialize filesystem
@@ -1150,13 +1615,13 @@ int fusion_fsyncdir(const char *path, int datasync, struct fuse_file_info *fi) {
 // parameter coming in here, or else the fact should be documented
 // (and this might as well return void, as it did in older versions of
 // FUSE).
-void *fusion_init(struct fuse_conn_info *conn) {
+ void *fusion_init(struct fuse_conn_info *conn) {
 
-	log_msg("\nfusion_init()\n");
+ 	log_msg("\nfusion_init()\n");
 
 
-	return FUSION_DATA;
-}
+ 	return FUSION_DATA;
+ }
 
 /**
  * Clean up filesystem
@@ -1165,11 +1630,11 @@ void *fusion_init(struct fuse_conn_info *conn) {
  *
  * Introduced in version 2.3
  */
-void fusion_destroy(void *userdata) {
-	log_msg("\nfusion_destroy(userdata=0x%08x)\n", userdata);
+ void fusion_destroy(void *userdata) {
+ 	log_msg("\nfusion_destroy(userdata=0x%08x)\n", userdata);
 
-	zht_free();
-}
+ 	zht_free();
+ }
 
 /**
  * Check file access permissions
@@ -1182,20 +1647,20 @@ void fusion_destroy(void *userdata) {
  *
  * Introduced in version 2.5
  */
-int fusion_access(const char *path, int mask) {
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
+ int fusion_access(const char *path, int mask) {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
 
-	log_msg("\nfusion_access(path=\"%s\", mask=0%o)\n", path, mask);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_access(path=\"%s\", mask=0%o)\n", path, mask);
+ 	fusion_fullpath(fpath, path);
 
-	retstat = access(fpath, mask);
+ 	retstat = access(fpath, mask);
 
-	if (retstat < 0)
-		retstat = fusion_error("fusion_access access");
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_access access");
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /**
  * FUSE document:
@@ -1215,14 +1680,94 @@ int fusion_access(const char *path, int mask) {
  * DFZ:
  * 	In fusionFS, a file creation always happens in the local node
  */
-int fusion_create(const char *path, mode_t mode, struct fuse_file_info *fi)
-{
-	int retstat = 0;
-	char fpath[PATH_MAX] = {0};
-	int fd;
+ int fusion_create(const char *path, mode_t mode, struct fuse_file_info *fi)
+ {
+ 	int retstat = 0;
+ 	char fpath[PATH_MAX] = {0};
+ 	int fd;
 
-	log_msg("\nfusion_create(path=\"%s\", mode=0%03o, fi=0x%08x)\n", path, mode, fi);
-	fusion_fullpath(fpath, path);
+ 	log_msg("\nfusion_create(path=\"%s\", mode=0%03o, fi=0x%08x)\n", path, mode, fi);
+ 	fusion_fullpath(fpath, path);
+
+/*new code*/
+
+ 	if(MODE_ARC)
+ 	{
+ 		while (ssd_is_full() && (arc_cache_has_files()))
+ 		{
+ 			char fname[PATH_MAX] = {0};
+            //get file name, update Q
+ 			remque_arc(fname);
+ 			char fname_ssd[PATH_MAX] = {0};
+ 			fusion_fullpath(fname_ssd, fname);
+            //remove file from ssd to hdd   
+ 			move_file_ssd(fname_ssd);
+			//update zht with special symbol to denote the swaped(to hdd) file
+ 			char myip[PATH_MAX] = {0};
+ 			net_getmyip(myip);
+ 			strcat(myip,"/");
+ 			zht_update(fname, myip);
+
+ 		}
+ 	}
+
+        // If SSD usage is still too high, swap ssd->hdd
+ 	else if(MODE_SCC)
+ 	{
+ 		while (ssd_is_full() && (FUSION_DATA->scc_head != NULL))
+ 		{
+ 			char fname[PATH_MAX] = {0};
+                        //get file name, update Q
+ 			remque_scc(fname);
+
+ 			char fname_ssd[PATH_MAX] = {0};
+ 			fusion_fullpath(fname_ssd, fname);
+
+                        //remove file from ssd to hdd   
+ 			move_file_ssd(fname_ssd);
+
+                       //update zht with special symbol to denote the swaped(to hdd) file
+ 			char myip[PATH_MAX] = {0};
+ 			net_getmyip(myip);
+ 			strcat(myip,"/");
+ 			zht_update(fname, myip);
+
+ 		}
+
+ 	}
+	// Before creating the file, make sure the SSD has sufficient space
+ 	else if (MODE_LRU)
+ 	{
+ 		while (ssd_is_full() && (FUSION_DATA->lru_head != NULL))
+ 		{
+                        //move LRU Q head file to ssd
+ 			move_file_ssd(FUSION_DATA->lru_head->fname);
+
+                        //update LRU
+ 			remque_lru();
+ 		}
+ 	}
+	else //LFU
+	{
+		while (ssd_is_full() && (FUSION_DATA->lfu_head != NULL))
+		{
+                        //move LFU Q head file to ssd
+			move_file_ssd(FUSION_DATA->lfu_head->fname);
+
+                        //update LFU
+			remque_lfu();
+		}
+	}
+
+        // And if the used SSD space is still too high, pop up a warning
+	if (ssd_is_full())
+	{
+		log_msg("\n\t Warning: SSD space is reaching limit. \n ");
+	}
+
+
+/*end new code*/
+	
 
 	/*create the local file*/
 	fd = creat(fpath, mode);
@@ -1231,13 +1776,42 @@ int fusion_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 	fi->fh = fd;
 	log_fi(fi);
 
-	/*add the filename to its parent path in the ZHT entry*/
-	char dirname[PATH_MAX] = {0};
-	char *pch = strrchr(path, '/');
-	strncpy(dirname, path, pch - path + 1);
-	log_msg("\n================DFZ debug: dirname = %s \n", dirname);
-	char oldval[PATH_MAX] = {0};
-	int stat = zht_lookup(dirname, oldval);
+/*new code*/
+
+	 // A newly created file should be inserted into the Q
+	inode_t *elem = (inode_t *)malloc(sizeof(inode_t));
+	strcpy(elem->fname, fpath);
+
+
+	if(MODE_ARC)
+	{
+		insque_arc(elem);
+	}
+	else if(MODE_SCC)
+	{	
+		insque_scc(path);
+	}
+	else if (MODE_LRU)
+	{
+		insque_lru(elem);
+	}
+    else //LFU
+    {
+        elem->freq = 1; //initialized to 1
+        insque_lfu(elem);
+    }
+
+/*end new code*/
+
+   /*add the filename to its parent path in the ZHT entry*/
+    char dirname[PATH_MAX] = {0};
+    char *pch = strrchr(path, '/');
+    strncpy(dirname, path, pch - path + 1);
+    log_msg("\n================DFZ debug: dirname = %s \n", dirname);
+    char oldval[PATH_MAX] = {0};
+    int stat = zht_lookup(dirname, oldval);
+    //new code
+	real_ip(oldval); //get real ip
 
 	if (ZHT_LOOKUP_FAIL == stat) {
 		log_msg("\n================DFZ ERROR: no parent path exists. \n");
@@ -1268,19 +1842,19 @@ int fusion_create(const char *path, mode_t mode, struct fuse_file_info *fi)
  *
  * Introduced in version 2.5
  */
-int fusion_ftruncate(const char *path, off_t offset, struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_ftruncate(const char *path, off_t offset, struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_ftruncate(path=\"%s\", offset=%lld, fi=0x%08x)\n", path,
-			offset, fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_ftruncate(path=\"%s\", offset=%lld, fi=0x%08x)\n", path,
+ 		offset, fi);
+ 	log_fi(fi);
 
-	retstat = ftruncate(fi->fh, offset);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_ftruncate ftruncate");
+ 	retstat = ftruncate(fi->fh, offset);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_ftruncate ftruncate");
 
-	return retstat;
-}
+ 	return retstat;
+ }
 
 /**
  * Get attributes from an open file
@@ -1297,71 +1871,92 @@ int fusion_ftruncate(const char *path, off_t offset, struct fuse_file_info *fi) 
 // Since it's currently only called after fusion_create(), and fusion_create()
 // opens the file, I ought to be able to just use the fd and ignore
 // the path...
-int fusion_fgetattr(const char *path, struct stat *statbuf,
-		struct fuse_file_info *fi) {
-	int retstat = 0;
+ int fusion_fgetattr(const char *path, struct stat *statbuf,
+ 	struct fuse_file_info *fi) {
+ 	int retstat = 0;
 
-	log_msg("\nfusion_fgetattr(path=\"%s\", statbuf=0x%08x, fi=0x%08x)\n", path,
-			statbuf, fi);
-	log_fi(fi);
+ 	log_msg("\nfusion_fgetattr(path=\"%s\", statbuf=0x%08x, fi=0x%08x)\n", path,
+ 		statbuf, fi);
+ 	log_fi(fi);
 
-	retstat = fstat(fi->fh, statbuf);
-	if (retstat < 0)
-		retstat = fusion_error("fusion_fgetattr fstat");
+ 	retstat = fstat(fi->fh, statbuf);
+ 	if (retstat < 0)
+ 		retstat = fusion_error("fusion_fgetattr fstat");
 
-	log_stat(statbuf);
+/*new code*/
 
-	return retstat;
-}
+	// Similarly to _getattr:
+        // get the attribute of HDD file if there is one
+ 	char fpath[PATH_MAX] = {0};
+ 	fusion_fullpath(fpath, path);
 
-struct fuse_operations fusion_oper = {
-		.getattr = fusion_getattr,
-		.readlink = fusion_readlink,
+ 	char fname_hdd[PATH_MAX] = {0};
+ 	get_hdd_path(fname_hdd, fpath);
+
+ 	if (S_ISLNK(statbuf->st_mode)
+ 		&& access(fname_hdd, F_OK) != -1)
+ 	{
+ 		retstat = lstat(fname_hdd, statbuf);
+ 		if (retstat != 0)
+ 		{
+ 			retstat = fusion_error("schfs_getattr lstat");
+ 		}
+ 	}
+
+/*end new code*/
+ 	log_stat(statbuf);
+
+ 	return retstat;
+ }
+
+ struct fuse_operations fusion_oper = {
+ 	.getattr = fusion_getattr,
+ 	.readlink = fusion_readlink,
 		// no .getdir -- that's deprecated
-		.getdir = NULL,
-		.mknod = fusion_mknod,
-		.mkdir = fusion_mkdir,
-		.unlink = fusion_unlink,
-		.rmdir = fusion_rmdir,
-		.symlink = fusion_symlink,
-		.rename = fusion_rename,
-		.link = fusion_link,
-		.chmod = fusion_chmod,
-		.chown = fusion_chown,
-		.truncate = fusion_truncate,
-		.utime = fusion_utime,
-		.open = fusion_open,
-		.read = fusion_read,
-		.write = fusion_write,
+ 	.getdir = NULL,
+ 	.mknod = fusion_mknod,
+ 	.mkdir = fusion_mkdir,
+ 	.unlink = fusion_unlink,
+ 	.rmdir = fusion_rmdir,
+ 	.symlink = fusion_symlink,
+ 	.rename = fusion_rename,
+ 	.link = fusion_link,
+ 	.chmod = fusion_chmod,
+ 	.chown = fusion_chown,
+ 	.truncate = fusion_truncate,
+ 	.utime = fusion_utime,
+ 	.open = fusion_open,
+ 	.read = fusion_read,
+ 	.write = fusion_write,
 		/** Just a placeholder, don't set */ // huh???
-		.statfs = fusion_statfs,
-		.flush = fusion_flush,
-		.release = fusion_release,
-		.fsync = fusion_fsync,
-		.setxattr = fusion_setxattr,
-		.getxattr = fusion_getxattr,
-		.listxattr = fusion_listxattr,
-		.removexattr = fusion_removexattr,
-		.opendir = fusion_opendir,
-		.readdir = fusion_readdir,
-		.releasedir = fusion_releasedir,
-		.fsyncdir = fusion_fsyncdir,
-		.init = fusion_init,
-		.destroy = fusion_destroy,
-		.access = fusion_access,
-		.create = fusion_create,
-		.ftruncate = fusion_ftruncate,
-		.fgetattr = fusion_fgetattr };
+ 	.statfs = fusion_statfs,
+ 	.flush = fusion_flush,
+ 	.release = fusion_release,
+ 	.fsync = fusion_fsync,
+ 	.setxattr = fusion_setxattr,
+ 	.getxattr = fusion_getxattr,
+ 	.listxattr = fusion_listxattr,
+ 	.removexattr = fusion_removexattr,
+ 	.opendir = fusion_opendir,
+ 	.readdir = fusion_readdir,
+ 	.releasedir = fusion_releasedir,
+ 	.fsyncdir = fusion_fsyncdir,
+ 	.init = fusion_init,
+ 	.destroy = fusion_destroy,
+ 	.access = fusion_access,
+ 	.create = fusion_create,
+ 	.ftruncate = fusion_ftruncate,
+ 	.fgetattr = fusion_fgetattr };
 
-void fusion_usage() {
-	fprintf(stderr, "usage:  fusionfs rootDir mountPoint\n");
-	abort();
-}
+ 	void fusion_usage() {
+ 		fprintf(stderr, "usage:  fusionfs rootDir mountPoint\n");
+ 		abort();
+ 	}
 
-int main(int argc, char *argv[]) {
-	int i;
-	int fuse_stat;
-	struct fusion_state *fusion_data;
+ 	int main(int argc, char *argv[]) {
+ 		int i;
+ 		int fuse_stat;
+ 		struct fusion_state *fusion_data;
 
 	// fusionfs doesn't do any access checking on its own (the comment
 	// blocks in fuse.h mention some of the functions that need
@@ -1372,36 +1967,75 @@ int main(int argc, char *argv[]) {
 	// and refuse if it is.  The somewhat smaller hole of an ordinary
 	// user doing it with the allow_other flag is still there because
 	// I don't want to parse the options string.
-	if ((getuid() == 0) || (geteuid() == 0)) {
-		fprintf(stderr,
-				"Running BBFS as root opens unnacceptable security holes\n");
-		return 1;
-	}
+ 		if ((getuid() == 0) || (geteuid() == 0)) {
+ 			fprintf(stderr,
+ 				"Running BBFS as root opens unnacceptable security holes\n");
+ 			return 1;
+ 		}
 
-	fusion_data = calloc(sizeof(struct fusion_state), 1);
-	if (fusion_data == NULL) {
-		perror("main calloc");
-		abort();
-	}
+ 		fusion_data = calloc(sizeof(struct fusion_state), 1);
+ 		if (fusion_data == NULL) {
+ 			perror("main calloc");
+ 			abort();
+ 		}
 
-	fusion_data->logfile = log_open();
+ 		fusion_data->logfile = log_open();
 
 	// libfuse is able to do most of the command line parsing; all I
 	// need to do is to extract the rootdir; this will be the first
 	// non-option passed in.  I'm using the GNU non-standard extension
 	// and having realpath malloc the space for the path
 	// the string.
-	for (i = 1; (i < argc) && (argv[i][0] == '-'); i++)
-		if (argv[i][1] == 'o')
-			i++; // -o takes a parameter; need to
+		for (i = 1; (i < argc) && (argv[i][0] == '-'); i++)
+			if (argv[i][1] == 'o')
+		i++; // -o takes a parameter; need to
 	// skip it too.  This doesn't
 	// handle "squashed" parameters
 
-	if ((argc - i) != 2)
+	if ((argc - i) != 2)               //check number of arguments
 		fusion_usage();
-
+	//store the root paths
 	fusion_data->rootdir = realpath(argv[i], NULL);
 
+/*new code*/
+
+	//store the ssd path
+	strcpy(fusion_data->ssd, fusion_data->rootdir);
+	strcat(fusion_data->ssd, DEFAULT_SSD);
+
+        //store the hdd path
+	strcpy(fusion_data->hdd, fusion_data->rootdir);
+	strcat(fusion_data->hdd, DEFAULT_HDD);
+
+        //setup other system initial statuses
+	fusion_data->lru_head = NULL;
+	fusion_data->lru_tail = NULL;
+	fusion_data->lfu_head = NULL;
+	fusion_data->lfu_tail = NULL;
+	fusion_data->scc_head = NULL;
+	fusion_data->scc_tail = NULL;
+	fusion_data->victim = NULL;
+	//fusion_data->arc = (arc_p*)calloc(1,sizeof(arc_p));
+	intialize_arc((*fusion_data).arc);
+	/*arc_p * ap = fusion_data->arc;
+	inode_t **arc_heads = ap->arc_heads;
+	inode_t **arc_tails = ap->arc_tails;
+	int *arc_list_size =  ap->arc_list_size;
+	ap->c = 10; // this is the number of slots in the cache
+	ap->p = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		arc_heads[i] = NULL;
+		arc_tails[i] = NULL;
+		arc_list_size[i] = 0;
+	}*/
+
+	// Initilize some other values in the system state e.g. SSD capacity
+	fusion_data->ssd_total = SSD_TOT;
+
+/*end new code*/
+	
+	//reset arguments for standard FUSE main
 	argv[i] = argv[i + 1];
 	argc--;
 

@@ -64,7 +64,7 @@ void rem_Q(inode_t *elem)
 	if(elem == elem->next) 
 	{
 		FUSION_DATA->victim = NULL;
-        FUSION_DATA->scc_head = NULL;
+        	FUSION_DATA->scc_head = NULL;
    		FUSION_DATA->scc_tail = NULL;
 		free(elem);
 		return;

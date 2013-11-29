@@ -2,11 +2,17 @@ FUSEINC=-D_FILE_OFFSET_BITS=64 -I/home/dcharp/CS_554/libfuse/include/fuse
 FUSELIB=-pthread -L/home/dcharp/CS_554/libfuse/lib -lfuse -lrt -ldl
 GBUFLIB=-L/home/dcharp/CS_554/proto/lib
 
-fusionfs : fusionfs.o util.o log.o
-	gcc -g -Wall -o fusionfs fusionfs.o util.o log.o -Lzht/lib -lzht -lstdc++ $(GBUFLIB) -lprotobuf -lpthread -Lffsnet -lffsnet_bridger ${FUSELIB}
-
+fusionfs : fusionfs.o util.o log.o roycache.o arc.o
+	gcc -g -Wall -o fusionfs fusionfs.o util.o log.o roycache.o arc.o -Lzht/lib -lzht -lstdc++ $(GBUFLIB) -lprotobuf -lpthread -Lffsnet -lffsnet_bridger ${FUSELIB}
 fusionfs.o : fusionfs.c log.h params.h util.h
 	gcc -g -Wall ${FUSEINC} -c fusionfs.c -L./ffsnet -lffsnet_bridger 
+
+roycache.o : roycache.c log.h params.h  util.h 
+	gcc -g -Wall ${FUSEINC} -c roycache.c
+
+arc.o : arc.c log.h params.h  util.h 
+	gcc -g -Wall ${FUSEINC} -c arc.c
+
 	
 util.o : util.c log.h params.h
 	gcc -g -Wall ${FUSEINC} -c util.c -L./zht/lib -lzht -lstdc++ -lprotobuf -lpthread	

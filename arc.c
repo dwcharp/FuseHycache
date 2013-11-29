@@ -1,10 +1,8 @@
-
 #define MIN(a, b) ((a < b) ? a : b)
 #define MAX(a, b) ((a > b) ? a : b)
 
-
 #include "params.h"
-#include <cstdlib>
+#include "util.h"
 #include <string.h>
 
 
@@ -85,21 +83,17 @@ void addtolist(int list_index, inode_t *elem)
 	inode_t* list_head = arc_heads[list_index];
 	inode_t* list_tail = arc_tails[list_index];
 	arc_list_size[list_index] += 1;
-	printf("Adding %s to the list %d\n", elem->fname, list_index );
 	// Add the elem to the LRU Q tail
 	if (list_head == NULL)  // If Q is empty 
 	{ 
-		printf("List was NULL\n");
 		elem->next = elem;
 		elem->prev = elem;
 		insque(elem, elem);	
 		arc_heads[list_index] = elem;
 		arc_tails[list_index] = elem;
-		printf("%s\n", arc_heads[list_index]->fname);
 	}
 	else  // Othersise only update the tail
 	{ 
-		printf("List was not NULL\n");
 		insque(elem, arc_tails[list_index]);
 		arc_tails[list_index] = elem;
 	}
@@ -129,7 +123,6 @@ void rmelem_list(int list_index, const char *fname)
 		
 		if (NULL != found) 
 		{
-			printf("Removing %s from the list %d\n", found->fname, list_index );
 			if (found == arc_heads[list_index])  //if it's the head
 			{ 
 				remque_head_arc(list_index);
@@ -245,13 +238,11 @@ inode_t* findelem_list(int list_index, const char *fname)
 	{
 		if (strcmp(curr->fname, fname) == 0)  //found match in LRU Q
 		{
-			printf("Found elem %s\n", curr->fname);
 			return curr;
 		}
 		
 		curr = curr->next;
 	} while(curr != arc_heads[list_index]);	//this is a double cyclic list
-	printf("%s\n","Found no Element" );
 	return NULL;
 }
 
@@ -277,17 +268,20 @@ int arc_cache_has_files()
 	return arc_heads[B1] != NULL || arc_heads[B2] != NULL; 
 }
 
-void intialize_arc()
+void intialize_arc(arc_p * ac)
 {
-	arc = fusion_data->arc;
+	arc = ac;
 	arc_heads = arc->arc_heads;
 	arc_tails = arc->arc_tails;
+	arc_list_size = arc->arc_list_size;
 	arc->c = 10;
 	arc->p = 0;
-	for (int i = 0; i < 4; ++i)
+	int i = 0;
+	for (; i < 4; ++i)
 	{
 		arc_heads[i] = NULL;
 		arc_tails[i] = NULL;
+		arc_list_size[i] = 0;
 	}
 
 }
@@ -297,7 +291,6 @@ inode_t *create_node(char *name)
 {
 	inode_t *elem = (inode_t*)calloc(1,sizeof(inode_t)); 
 	strcpy(elem->fname, name );
-	printf("%s\n", elem->fname);
 	return elem; 
 }
 
@@ -306,16 +299,14 @@ int get_size(int list_index)
 	return arc->arc_list_size[list_index];
 }
 
-int main()
+/*int main()
 {
 
-	printf("Hello world from the ARC progam\n");
 	intialize_arc();
 	insque_arc(create_node("Dwayne"));
 	insque_arc(create_node("Dwayne"));
 	insque_arc(create_node("Dwayne"));
 	//inode_t *e = arc_heads[0];
-	//printf("%s from main \n", e->fname);
 
-}
+}*/
 

@@ -100,7 +100,7 @@ typedef struct arc_state
 	inode_t *arc_heads[4];
 	inode_t *arc_tails[4];
 	int arc_list_size[4];
-    int c; // total cache size
+        int c; // total cache size
 	int p;
 }arc_p;
 
@@ -114,20 +114,19 @@ struct fusion_state
     char *rootdir; //schfs root mount
     char ssd[PATH_MAX]; //ssd mount point
     char hdd[PATH_MAX]; //hdd mount point
-	int ssd_total; //total space of ssd
-	int ssd_used; //space that has been used in ssd
+    int ssd_total; //total space of ssd
+    int ssd_used; //space that has been used in ssd
 	
 	//LRU Q:
-	inode_t *lru_head;
+    inode_t *lru_head;
     inode_t *lru_tail;
     inode_t *lfu_head;
     inode_t *lfu_tail;
     
     inode_t *scc_head;
-	inode_t *scc_tail;
-	inode_t *victim;
-
-	arc_p   *arc;	
+    inode_t *scc_tail; 
+    inode_t *victim;
+    arc_p   *arc;	
 };
 
 
