@@ -5,7 +5,7 @@
  */
 
 
-#include "royparams.h"
+#include "params.h"
 #include "util.h"
 #include <ctype.h>
 #include <dirent.h>
@@ -64,8 +64,8 @@ void rem_Q(inode_t *elem)
 	if(elem == elem->next) 
 	{
 		FUSION_DATA->victim = NULL;
-	        FUSION_DATA->scc_head = NULL;
-       		FUSION_DATA->scc_tail = NULL;
+        FUSION_DATA->scc_head = NULL;
+   		FUSION_DATA->scc_tail = NULL;
 		free(elem);
 		return;
 	}
@@ -117,9 +117,9 @@ void insque_scc(const char *fname)
 		if (FUSION_DATA->scc_head == NULL)
 		{
 		 	elem->next = elem;
-		        elem->prev = elem;
-		        FUSION_DATA->scc_head = elem;
-		        FUSION_DATA->scc_tail = elem;
+	        elem->prev = elem;
+	        FUSION_DATA->scc_head = elem;
+	        FUSION_DATA->scc_tail = elem;
 		}
 		// FIFO Q is nonempty 
 		else

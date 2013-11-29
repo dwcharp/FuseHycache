@@ -50,6 +50,24 @@ void insque_scc(const char *fname);
 void remque_scc(char *fname);
 void rmelem_scc(const char *fname);
 
+//ARC utilities
+inode_t **arc_heads;
+inode_t **arc_tails;
+arc_p   *arc;
+/* Helper function to append an elem to a list */
+
+inode_t* findelem_list(int, const char*);
+void remque_head_arc(int);
+inode_t* remove_node(int list_index);
+void rmelem_list(int list_index, const char *fname);
+void rmelem_arc(const char *fname);
+void remque_arc(char *fname);
+void addtolist(int list_index, inode_t *elem);
+int get_size(int);
+void replace(const char *fname);
+int arc_cache_has_files();
+
+
 // Debug utilities
 void print_lru();
 void print_lfu();

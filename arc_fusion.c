@@ -662,8 +662,13 @@ int fusion_rename(const char *path, const char *newpath) {
             		inode *inode = findelem_arc(fpath);
             		strcpy(inode->fname, fnewpath);
             	}
-                // Need to update the cache Q
-            	if (MODE_LRU)
+                
+                else if(MODE_SCC)
+				{	
+    				inode_t *inode = findelem_scc(fpath);
+                    strcpy(inode->fname, fnewpath);
+				}
+            	else if (MODE_LRU)
             	{
             		inode_t *inode = findelem_lru(fpath);
             		strcpy(inode->fname, fnewpath);
@@ -858,12 +863,17 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 
  		if(MODE_ARC)
  		{
-
- 			move_file_ssd(remque_arc()); 
- 			char myip[PATH_MAX] = {0};
- 			net_getmyip(myip);
- 			strcat(myip,"/");
- 			zht_update(path, myip);
+ 			while(ssd_is_full() && (arc_cache_has_file()))
+ 			{
+ 				char fname[PATH_MAX] = {0};
+ 				char myip[PATH_MAX] = {0};
+ 				remque_arc(fname)
+	 			move_file_ssd(fname); 
+	 			net_getmyip(myip);
+	 			strcat(myip,"/");
+	 			zht_update(path, myip);	
+ 			}
+ 			
  		}
 
  		else if(MODE_SCC){
@@ -942,7 +952,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  	inode_t *elem = (inode_t *)malloc(sizeof(inode_t));
  	strcpy(elem->fname, fpath);
 
- 	if(MODE)
+ 	if(MODE_ARC)
  	{
  		insque_arc(elem);
  	}
@@ -1686,16 +1696,13 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  		while (ssd_is_full() && (arc_cache_has_file()))
  		{
  			char fname[PATH_MAX] = {0};
-                        //get file name, update Q
+            //get file name, update Q
  			remque_arc(fname);
-
  			char fname_ssd[PATH_MAX] = {0};
  			fusion_fullpath(fname_ssd, fname);
-
-                        //remove file from ssd to hdd   
+            //remove file from ssd to hdd   
  			move_file_ssd(fname_ssd);
-
-                       //update zht with special symbol to denote the swaped(to hdd) file
+			//update zht with special symbol to denote the swaped(to hdd) file
  			char myip[PATH_MAX] = {0};
  			net_getmyip(myip);
  			strcat(myip,"/");
@@ -1705,7 +1712,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  	}
 
         // If SSD usage is still too high, swap ssd->hdd
- 	if(MODE_SCC)
+ 	else if(MODE_SCC)
  	{
  		while (ssd_is_full() && (FUSION_DATA->scc_head != NULL))
  		{
@@ -1796,14 +1803,14 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 
 /*end new code*/
 
-	/*add the filename to its parent path in the ZHT entry*/
-            char dirname[PATH_MAX] = {0};
-            char *pch = strrchr(path, '/');
-            strncpy(dirname, path, pch - path + 1);
-            log_msg("\n================DFZ debug: dirname = %s \n", dirname);
-            char oldval[PATH_MAX] = {0};
-            int stat = zht_lookup(dirname, oldval);
-//new code
+   /*add the filename to its parent path in the ZHT entry*/
+    char dirname[PATH_MAX] = {0};
+    char *pch = strrchr(path, '/');
+    strncpy(dirname, path, pch - path + 1);
+    log_msg("\n================DFZ debug: dirname = %s \n", dirname);
+    char oldval[PATH_MAX] = {0};
+    int stat = zht_lookup(dirname, oldval);
+    //new code
 	real_ip(oldval); //get real ip
 
 	if (ZHT_LOOKUP_FAIL == stat) {
@@ -1979,9 +1986,9 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 	// non-option passed in.  I'm using the GNU non-standard extension
 	// and having realpath malloc the space for the path
 	// the string.
- 		for (i = 1; (i < argc) && (argv[i][0] == '-'); i++)
- 			if (argv[i][1] == 'o')
-			i++; // -o takes a parameter; need to
+		for (i = 1; (i < argc) && (argv[i][0] == '-'); i++)
+			if (argv[i][1] == 'o')
+		i++; // -o takes a parameter; need to
 	// skip it too.  This doesn't
 	// handle "squashed" parameters
 
@@ -2008,10 +2015,11 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 	fusion_data->scc_head = NULL;
 	fusion_data->scc_tail = NULL;
 	fusion_data->victim = NULL;
-	arc_p * ap = fusion_data->arc;
+	intialize_arc();
+	/*arc_p * ap = fusion_data->arc;
 	inode_t **arc_heads = ap->arc_heads;
 	inode_t **arc_tails = ap->arc_tails;
-	int *arc_list_size = ap->arc_list_size;
+	int *arc_list_size =  ap->arc_list_size;
 	ap->c = 10; // this is the number of slots in the cache
 	ap->p = 0;
 	for (int i = 0; i < 4; ++i)
@@ -2019,7 +2027,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 		arc_heads[i] = NULL;
 		arc_tails[i] = NULL;
 		arc_list_size[i] = 0;
-	}
+	}*/
 
 	// Initilize some other values in the system state e.g. SSD capacity
 	fusion_data->ssd_total = SSD_TOT;

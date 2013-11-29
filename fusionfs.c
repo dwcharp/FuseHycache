@@ -75,7 +75,7 @@ int zht_update(const char *key, const char *val)
 //	if (ZHT_LOOKUP_FAIL == status)
 //		log_msg("DFZ debug: zht_update() - key %s not found. \n\n", key);
 //	else
-//		log_msg("DFZ debug: zht_update() - key = %s, oldval = %s. \n\n", key, oldval);
+//		log_msg("DFZ debug: zht_update()/ - key = %s, oldval = %s. \n\n", key, oldval);
 //
 //	log_msg("DFZ debug: zht_update() - key = %s, val =  %s. \n\n", key, val);
 
