@@ -123,13 +123,13 @@ void rmelem_list(int list_index, const char *fname)
 		
 		if (NULL != found) 
 		{
-			if (found == arc_heads[list_index])  //if it's the head
+			if (found == FUSION_DATA->arc_heads[list_index])  //if it's the head
 			{ 
 				remque_head_arc(list_index);
 			}
 			else if (found == arc_tails[list_index])  //if it's tail
 			{
-				arc_tails[list_index] = found->prev;
+				FUSION_DATA->arc_tails[list_index] = found->prev;
 				remque(found);
 				free(found);
 			}
@@ -144,13 +144,13 @@ void rmelem_list(int list_index, const char *fname)
 
 void  remque_arc(char *fname)
 {
-	if(arc_heads[B1] != NULL)
+	if(FUSION_DATA->arc_heads[B1] != NULL)
 	{
-		strcpy(fname, arc_heads[B1]->fname);
+		strcpy(fname, FUSION_DATA->arc_heads[B1]->fname);
 		remque_head_arc(B1);
-	}else if(arc_heads[B2] != NULL)
+	}else if(FUSION_DATA->arc_heads[B2] != NULL)
 	{
-		strcpy(fname, arc_heads[B2]->fname);
+		strcpy(fname, FUSION_DATA->arc_heads[B2]->fname);
 		remque_head_arc(B2);
 	}
 }
@@ -160,24 +160,24 @@ void  remque_arc(char *fname)
 void remque_head_arc(int list_index) 
 {
 
-	if (arc_heads[list_index] == NULL)
+	if (FUSION_DATA->arc_heads[list_index] == NULL)
 	{
 		//schfs_error("remque_lru ARC Q is alreay empty");
 	}
 
-	inode_t *head = arc_heads[list_index];
+	inode_t *head = FUSION_DATA->arc_heads[list_index];
 
 	//only one elem
 	if (head == head->next)  
 	{
-		arc_heads[list_index] = NULL;
-		arc_tails[list_index] = NULL;
+		FUSION_DATA->arc_heads[list_index] = NULL;
+		FUSION_DATA->arc_tails[list_index] = NULL;
 	}else
 	 {
 		 //reset the ARC head
-		arc_heads[list_index] = head->next;	
+		FUSION_DATA->arc_heads[list_index] = head->next;	
 	 }
-	arc_list_size[list_index] -= 1;
+	FUSION_DATA->arc_list_size[list_index] -= 1;
 	remque(head);
 	free(head);
 }
@@ -187,23 +187,23 @@ void remque_head_arc(int list_index)
 inode_t* remove_node(int list_index)
 {
 
-	if (arc_heads[list_index] == NULL)
+	if (FUSION_DATA->arc_heads[list_index] == NULL)
 	{
 		//schfs_error("remque_lru ARC Q is alreay empty");
 	}
 
-	inode_t *head = arc_heads[list_index];
+	inode_t *head = FUSION_DATA->arc_heads[list_index];
 
 	//only one elem
 	if (head == head->next)  
 	{
 		// need to fix this
-		arc_heads[list_index] = NULL;
-		arc_tails[list_index] = NULL;
+		FUSION_DATA->arc_heads[list_index] = NULL;
+		FUSION_DATA->arc_tails[list_index] = NULL;
 	}else
 	 {
 	 	//reset the ARC head
-	 	arc_heads[list_index] = head->next;
+	 	FUSION_DATA->arc_heads[list_index] = head->next;
 	 }
 	remque(head);
 	return head;
@@ -230,10 +230,10 @@ inode_t* findelem_list(int list_index, const char *fname)
 {
 	//log_msg("\nfindelem_arc\n");
 	
-	if (NULL == arc_heads[list_index]) 
+	if (NULL == FUSION_DATA->arc_heads[list_index]) 
 		return NULL;	
 	
-	inode_t *curr = arc_heads[list_index];
+	inode_t *curr = FUSION_DATA->arc_heads[list_index];
 	do 
 	{
 		if (strcmp(curr->fname, fname) == 0)  //found match in LRU Q
@@ -242,7 +242,7 @@ inode_t* findelem_list(int list_index, const char *fname)
 		}
 		
 		curr = curr->next;
-	} while(curr != arc_heads[list_index]);	//this is a double cyclic list
+	} while(curr != FUSION_DATA->arc_heads[list_index]);	//this is a double cyclic list
 	return NULL;
 }
 
@@ -265,22 +265,19 @@ void replace(const char *fname)
 
 int arc_cache_has_files()
 {
-	return arc_heads[B1] != NULL || arc_heads[B2] != NULL; 
+	return FUSION_DATA->arc_heads[B1] != NULL || FUSION_DATA->arc_heads[B2] != NULL; 
 }
 
 void intialize_arc()
 {
-	arc_heads = FUSION_DATA->arc_heads;
-	arc_tails = FUSION_DATA->arc_tails
-	arc_list_size = arc->arc_list_size;
-	arc->c = 10;
-	arc->p = 0;
+	FUSION_DATA->c = 10;
+	FUSION_DATA->p = 0;
 	int i = 0;
 	for (; i < 4; i++)
 	{
-		arc_heads[i] = NULL;
-		arc_tails[i] = NULL;
-		arc_list_size[i] = 0;
+		FUSION_DATA->arc_heads[i] = NULL;
+		FUSION_DATA->arc_tails[i] = NULL;
+		FUSION_DATA->arc_list_size[i] = 0;
 	}
 
 }
@@ -295,7 +292,7 @@ inode_t *create_node(char *name)
 
 int get_size(int list_index)
 {
-	return arc->arc_list_size[list_index];
+	return FUSION_DATA->arc_list_size[list_index];
 }
 
 /*int main()
