@@ -56,7 +56,7 @@ inode_t **arc_tails;
 arc_p   *arc;
 int *arc_list_size;
 /* Helper function to append an elem to a list */
-void intialize_arc(arc_p*);
+void intialize_arc();
 inode_t* findelem_list(int, const char*);
 inode_t* findelem_arc(char *fname);
 void remque_head_arc(int);

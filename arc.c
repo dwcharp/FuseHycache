@@ -4,13 +4,13 @@
 #include "params.h"
 #include "util.h"
 #include <string.h>
-
+#include <fuse.h>
 
 
 void insque_arc(inode_t *elem) 
 {
 	const char *fname = elem->fname;
-
+	
 	if(findelem_list(T1,fname))
 	{
 		//in t1
@@ -268,21 +268,20 @@ int arc_cache_has_files()
 	return arc_heads[B1] != NULL || arc_heads[B2] != NULL; 
 }
 
-void intialize_arc(arc_p *ac)
+void intialize_arc()
 {
-	arc = &ac;
-	arc_heads = arc->arc_heads;
-	arc_tails = arc->arc_tails;
+	arc_heads = FUSION_DATA->arc_heads;
+	/*arc_tails = arc->arc_tails;
 	arc_list_size = arc->arc_list_size;
 	arc->c = 10;
 	arc->p = 0;
 	int i = 0;
-	for (; i < 4; ++i)
+	for (; i < 4; i++)
 	{
 		arc_heads[i] = NULL;
 		arc_tails[i] = NULL;
 		arc_list_size[i] = 0;
-	}
+	}*/
 
 }
 
