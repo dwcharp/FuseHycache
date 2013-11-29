@@ -270,15 +270,15 @@ int arc_cache_has_files()
 
 void intialize_arc()
 {
-	FUSION_DATA->c = 10;
-	FUSION_DATA->p = 0;
-	int i = 0;
-	for (; i < 4; i++)
+	//FUSION_DATA->c = 10;
+	//FUSION_DATA->p = 0;
+	//int i = 0;
+	/*for (; i < 4; i++)
 	{
 		FUSION_DATA->arc_heads[i] = NULL;
 		FUSION_DATA->arc_tails[i] = NULL;
 		FUSION_DATA->arc_list_size[i] = 0;
-	}
+	}*/
 
 }
 

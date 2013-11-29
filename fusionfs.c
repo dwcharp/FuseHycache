@@ -2015,20 +2015,20 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 	fusion_data->scc_head = NULL;
 	fusion_data->scc_tail = NULL;
 	fusion_data->victim = NULL;
+	
 	//fusion_data->arc = (arc_p*)calloc(1,sizeof(arc_p));
-	intialize_arc();
-	/*arc_p * ap = fusion_data->arc;
-	inode_t **arc_heads = ap->arc_heads;
-	inode_t **arc_tails = ap->arc_tails;
-	int *arc_list_size =  ap->arc_list_size;
-	ap->c = 10; // this is the number of slots in the cache
-	ap->p = 0;
-	for (int i = 0; i < 4; ++i)
+	inode_t **arc_heads = fusion_data->arc_heads;
+	inode_t **arc_tails = fusion_data->arc_tails;
+	int *arc_list_size =  fusion_data->arc_list_size;
+	fusion_data->c = 10; // this is the number of slots in the cache
+	fusion_data->p = 0;
+	int y = 0;
+	for (; y < 4; y++)
 	{
-		arc_heads[i] = NULL;
-		arc_tails[i] = NULL;
-		arc_list_size[i] = 0;
-	}*/
+		arc_heads[y] = NULL;
+		arc_tails[y] = NULL;
+		arc_list_size[y] = 0;
+	}
 
 	// Initilize some other values in the system state e.g. SSD capacity
 	fusion_data->ssd_total = SSD_TOT;
