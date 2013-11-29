@@ -80,22 +80,22 @@ void insque_arc(inode_t *elem)
 
 void addtolist(int list_index, inode_t *elem)
 {
-	inode_t* list_head = arc_heads[list_index];
-	inode_t* list_tail = arc_tails[list_index];
-	arc_list_size[list_index] += 1;
+	inode_t* list_head = FUSION_DATA->arc_heads[list_index];
+	inode_t* list_tail = FUSION_DATA->arc_tails[list_index];
+	FUSION_DATA->arc_list_size[list_index] += 1;
 	// Add the elem to the LRU Q tail
 	if (list_head == NULL)  // If Q is empty 
 	{ 
 		elem->next = elem;
 		elem->prev = elem;
 		insque(elem, elem);	
-		arc_heads[list_index] = elem;
-		arc_tails[list_index] = elem;
+		FUSION_DATA->arc_heads[list_index] = elem;
+		FUSION_DATA->arc_tails[list_index] = elem;
 	}
 	else  // Othersise only update the tail
 	{ 
-		insque(elem, arc_tails[list_index]);
-		arc_tails[list_index] = elem;
+		insque(elem, FUSION_DATA->arc_tails[list_index]);
+		FUSION_DATA->arc_tails[list_index] = elem;
 	}
 }
 
@@ -271,7 +271,7 @@ int arc_cache_has_files()
 void intialize_arc()
 {
 	arc_heads = FUSION_DATA->arc_heads;
-	/*arc_tails = arc->arc_tails;
+	arc_tails = FUSION_DATA->arc_tails
 	arc_list_size = arc->arc_list_size;
 	arc->c = 10;
 	arc->p = 0;
@@ -281,7 +281,7 @@ void intialize_arc()
 		arc_heads[i] = NULL;
 		arc_tails[i] = NULL;
 		arc_list_size[i] = 0;
-	}*/
+	}
 
 }
 
