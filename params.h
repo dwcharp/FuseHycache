@@ -126,14 +126,14 @@ struct fusion_state
     inode_t *scc_head;
     inode_t *scc_tail; 
     inode_t *victim;
-    
+	
+    char elem_to_remove[PATH_MAX];    
     inode_t *arc_heads[4];
     inode_t *arc_tails[4];
     int arc_list_size[4];
     int c; // total cache size
     int p;
 
- //   arc_p   *arc;	
 };
 
 

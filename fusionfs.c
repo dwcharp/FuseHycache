@@ -955,6 +955,13 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  	if(MODE_ARC)
  	{
  		insque_arc(elem);
+		//ARC may replace an element in the cache and it needs to be moved
+		if(FUSION_DATA->elem_to_remove[0] != '\0') 
+		{
+ 			move_file_ssd(FUSION_DATA->elem_to_remove);
+			FUSION_DATA->elem_to_remove[0] = '\0';
+		}
+		
  	}
  	else if(MODE_SCC)
  	{	
@@ -2022,6 +2029,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
 	int *arc_list_size =  fusion_data->arc_list_size;
 	fusion_data->c = 10; // this is the number of slots in the cache
 	fusion_data->p = 0;
+	fusion_data->elem_to_remove[0] = '\0';
 	int y = 0;
 	for (; y < 4; y++)
 	{

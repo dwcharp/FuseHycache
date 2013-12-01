@@ -56,12 +56,14 @@ void insque_arc(inode_t *elem)
 	{
 		if(get_size(T1) < FUSION_DATA->c)
 		{
-			// fusion needs to know about this
 			remque_head_arc(B1);
 			replace(fname);
 		}else
 		 {
 		 	//
+			inode_t* old = remove_node(T1);
+			strcpy(FUSION_DATA->elem_to_remove, old->fname);
+			free(old);
 		 }
 	}else
 	 {
@@ -200,7 +202,6 @@ inode_t* remove_node(int list_index)
 	//only one elem
 	if (head == head->next)  
 	{
-		// need to fix this
 		FUSION_DATA->arc_heads[list_index] = NULL;
 		FUSION_DATA->arc_tails[list_index] = NULL;
 	}else
@@ -263,6 +264,7 @@ void replace(const char *fname)
 	 	addtolist(B2, old);
 	 }
 	 //remove from ssd
+	strcpy(FUSION_DATA->elem_to_remove, old->fname);
 }
 
 
