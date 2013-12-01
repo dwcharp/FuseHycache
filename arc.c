@@ -33,7 +33,7 @@ void insque_arc(inode_t *elem)
 	{
 		//in b1
 		int max = MAX(get_size(B2)/ get_size(B1), 1);
-		arc->p = MIN(arc->c, arc->p + max);
+		FUSION_DATA->p = MIN(FUSION_DATA->c,FUSION_DATA->p + max);
 		replace(fname);
 		rmelem_list(B1, fname);
 		addtolist(T2, elem);
@@ -44,7 +44,7 @@ void insque_arc(inode_t *elem)
 	{
 		//in b2
 		int m1 = MAX(get_size(B1)/ get_size(B2), 1);
-		arc->p = MAX(0, arc->p - m1);
+		FUSION_DATA->p = MAX(0, FUSION_DATA->p - m1);
 		replace(fname);
 		rmelem_list(B2, fname);
 		addtolist(T2, elem);
@@ -52,9 +52,9 @@ void insque_arc(inode_t *elem)
 	}
 
 
-	if((get_size(T1) + get_size(B1)) == arc->c)
+	if((get_size(T1) + get_size(B1)) == FUSION_DATA->c)
 	{
-		if(get_size(T1) < arc->c)
+		if(get_size(T1) < FUSION_DATA->c)
 		{
 			// fusion needs to know about this
 			remque_head_arc(B1);
@@ -66,9 +66,9 @@ void insque_arc(inode_t *elem)
 	}else
 	 {
 	 	int total = get_size(T1) + get_size(B1) + get_size(T2) + get_size(B2);
-	 	if(total >= arc->c)
+	 	if(total >= FUSION_DATA->c)
 	 	{
-	 		if(total == (2 * arc->c))
+	 		if(total == (2 * FUSION_DATA->c))
 	 		{
 	 			remque_head_arc(B2);
 	 		}
@@ -130,7 +130,7 @@ void rmelem_list(int list_index, const char *fname)
 			{ 
 				remque_head_arc(list_index);
 			}
-			else if (found == arc_tails[list_index])  //if it's tail
+			else if (found == FUSION_DATA->arc_tails[list_index])  //if it's tail
 			{
 				FUSION_DATA->arc_tails[list_index] = found->prev;
 				remque(found);
@@ -252,8 +252,8 @@ inode_t* findelem_list(int list_index, const char *fname)
 void replace(const char *fname)
 {
 	inode_t *old = NULL;
-	if( (findelem_list(B2, fname) && get_size(T1) == arc->p) ||
-		get_size(T1) > arc->p)
+	if( (findelem_list(B2, fname) && get_size(T1) == FUSION_DATA->p) ||
+		get_size(T1) > FUSION_DATA->p)
 	{
 		old = remove_node(T1);
 		addtolist(B1, old);
@@ -268,7 +268,7 @@ void replace(const char *fname)
 
 int arc_cache_has_files()
 {
-	return FUSION_DATA->arc_heads[B1] != NULL || FUSION_DATA->arc_heads[B2] != NULL; 
+	return FUSION_DATA->arc_heads[T1] != NULL || FUSION_DATA->arc_heads[T2] != NULL; 
 }
 
 void intialize_arc()

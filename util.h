@@ -51,10 +51,7 @@ void remque_scc(char *fname);
 void rmelem_scc(const char *fname);
 
 //ARC utilities
-inode_t **arc_heads;
-inode_t **arc_tails;
-arc_p   *arc;
-int *arc_list_size;
+
 /* Helper function to append an elem to a list */
 void intialize_arc();
 inode_t* findelem_list(int, const char*);
