@@ -35,9 +35,9 @@
 // ===================
 #define ROOTSYMSIZE 4096 //ssd mount point size; not in use now.
 #define SSD_TOT (ONEM) //the threshold; <= SSD_Capacity - Max_File_size
-#define MODE_LRU 1 //LRU caching by default
-#define MODE_SCC 2 //SCC caching
-#define MODE_ARC 3 // Adapative replacement caching
+#define MODE_LRU 0 //LRU caching by default
+#define MODE_SCC 1 //SCC caching
+#define MODE_ARC 0 // Adapative replacement caching
 #define LOG_OFF 1 //turn off the log; faster your system!
 #define CHKSSD_POSIX 0 //use command line to check SSD usage, seems to have performance degradatoin. Not in use now.
 // ======OK you are all set============

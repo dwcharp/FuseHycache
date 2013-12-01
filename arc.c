@@ -5,7 +5,7 @@
 #include "util.h"
 #include <string.h>
 #include <fuse.h>
-
+#include "log.h"
 
 void insque_arc(inode_t *elem) 
 {
@@ -37,6 +37,7 @@ void insque_arc(inode_t *elem)
 		replace(fname);
 		rmelem_list(B1, fname);
 		addtolist(T2, elem);
+		return;
 	}
 
 	if(findelem_list(B2,fname))
@@ -47,6 +48,7 @@ void insque_arc(inode_t *elem)
 		replace(fname);
 		rmelem_list(B2, fname);
 		addtolist(T2, elem);
+		return;
 	}
 
 
@@ -80,6 +82,7 @@ void insque_arc(inode_t *elem)
 
 void addtolist(int list_index, inode_t *elem)
 {
+	log_msg("Adding elem to list %d", list_index);
 	inode_t* list_head = FUSION_DATA->arc_heads[list_index];
 	inode_t* list_tail = FUSION_DATA->arc_tails[list_index];
 	FUSION_DATA->arc_list_size[list_index] += 1;
