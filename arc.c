@@ -149,14 +149,14 @@ void rmelem_list(int list_index, const char *fname)
 
 void  remque_arc(char *fname)
 {
-	if(FUSION_DATA->arc_heads[B1] != NULL)
+	if(FUSION_DATA->arc_heads[T1] != NULL)
 	{
-		strcpy(fname, FUSION_DATA->arc_heads[B1]->fname);
-		remque_head_arc(B1);
-	}else if(FUSION_DATA->arc_heads[B2] != NULL)
+		strcpy(fname, FUSION_DATA->arc_heads[T1]->fname);
+		remove_node(T1);
+	}else if(FUSION_DATA->arc_heads[T2] != NULL)
 	{
-		strcpy(fname, FUSION_DATA->arc_heads[B2]->fname);
-		remque_head_arc(B2);
+		strcpy(fname, FUSION_DATA->arc_heads[T2]->fname);
+		remove_node(T2);
 	}
 }
 
@@ -210,6 +210,7 @@ inode_t* remove_node(int list_index)
 	 	FUSION_DATA->arc_heads[list_index] = head->next;
 	 }
 	remque(head);
+	FUSION_DATA->arc_list_size[list_index] -= 1;
 	return head;
 }
 
