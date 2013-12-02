@@ -868,7 +868,9 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  				char fname[PATH_MAX] = {0};
  				char myip[PATH_MAX] = {0};
  				remque_arc(fname);
-	 			move_file_ssd(fname); 
+ 				char fname_ssd[PATH_MAX] = {0};
+ 				fusion_fullpath(fname_ssd, fname);
+	 			move_file_ssd(fname_ssd); 
 	 			net_getmyip(myip);
 	 			strcat(myip,"/");
 	 			zht_update(path, myip);	
