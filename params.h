@@ -34,7 +34,7 @@
 // 		CHANGE THE FOLLOWING BEFORE DEPLOYMENT!!!!!!!!
 // ===================
 #define ROOTSYMSIZE 4096 //ssd mount point size; not in use now.
-#define SSD_TOT (ONEM) //the threshold; <= SSD_Capacity - Max_File_size
+#define SSD_TOT (ONEK) //the threshold; <= SSD_Capacity - Max_File_size
 #define MODE_LRU 0 //LRU caching by default
 #define MODE_SCC 0 //SCC caching
 #define MODE_ARC 1 // Adapative replacement caching

@@ -868,12 +868,10 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  				char fname[PATH_MAX] = {0};
  				char myip[PATH_MAX] = {0};
  				remque_arc(fname);
- 				char fname_ssd[PATH_MAX] = {0};
- 				fusion_fullpath(fname_ssd, fname);
-	 			move_file_ssd(fname_ssd); 
+	 			move_file_ssd(fname); 
 	 			net_getmyip(myip);
 	 			strcat(myip,"/");
-	 			zht_update(path, myip);	
+	 			zht_update(fname , myip);	
  			}
  			
  		}
@@ -967,7 +965,7 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  	}
  	else if(MODE_SCC)
  	{	
- 		insque_scc(path);
+ 		insque_scc(fpath);
  	}
  	else if (MODE_LRU)
  	{
@@ -1707,10 +1705,8 @@ int fusion_utime(const char *path, struct utimbuf *ubuf) {
  			char fname[PATH_MAX] = {0};
             //get file name, update Q
  			remque_arc(fname);
- 			char fname_ssd[PATH_MAX] = {0};
- 			fusion_fullpath(fname_ssd, fname);
             //remove file from ssd to hdd   
- 			move_file_ssd(fname_ssd);
+ 			move_file_ssd(fname);
 			//update zht with special symbol to denote the swaped(to hdd) file
  			char myip[PATH_MAX] = {0};
  			net_getmyip(myip);

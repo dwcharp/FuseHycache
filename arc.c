@@ -152,11 +152,11 @@ void  remque_arc(char *fname)
 	if(FUSION_DATA->arc_heads[T1] != NULL)
 	{
 		strcpy(fname, FUSION_DATA->arc_heads[T1]->fname);
-		remove_node(T1);
+		addtolist(B1, remove_node(T1));
 	}else if(FUSION_DATA->arc_heads[T2] != NULL)
 	{
 		strcpy(fname, FUSION_DATA->arc_heads[T2]->fname);
-		remove_node(T2);
+		addtolist(B2, remove_node(T2));
 	}
 }
 
